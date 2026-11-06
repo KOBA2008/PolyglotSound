@@ -26,7 +26,7 @@ basées sur ffmpeg + numpy, pour que le frontend soit toujours démontrable.
 Variables d'environnement backend :
 - `WORKER_URL` (ex: https://xxx.trycloudflare.com) ; absent = mode démo
 - `LLM_PROVIDER` = `groq` | `anthropic` | `ollama` | `rule` | `auto` (défaut `auto` : groq si GROQ_API_KEY, sinon anthropic si ANTHROPIC_API_KEY, sinon rule)
-- `GROQ_API_KEY`, `GROQ_MODEL` (défaut `llama-3.3-70b-versatile`), `ANTHROPIC_API_KEY`, `OLLAMA_URL`
+- `GROQ_API_KEY`, `GROQ_MODEL` (défaut `openai/gpt-oss-120b`, repli `GROQ_FALLBACK_MODEL` = `openai/gpt-oss-20b` ; Groq ne sert plus de Llama de chat), `ANTHROPIC_API_KEY`, `OLLAMA_URL`
 - `DATA_DIR` (défaut `backend/data`)
 
 ## Modèle de données : Project (JSON renvoyé par le backend)

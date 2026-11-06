@@ -2,6 +2,7 @@
 elle met à jour steps[step] (status, progress, message) dans le store."""
 from __future__ import annotations
 
+import os
 import asyncio
 import logging
 import shutil
@@ -243,7 +244,7 @@ async def step_translate(pid: str, body: dict[str, Any]) -> str:
     # 2. Variantes chantables, en parallèle (4 lignes à la fois)
     _set_step(pid, "translate", progress=30, message="Écriture des variantes chantables...")
     context = _lyrics_context(p)
-    sem = asyncio.Semaphore(4)
+    sem = asyncio.Semaphore(int(os.getenv("TRANSLATE_CONCURRENCY", "2")))
     done = 0
 
     async def one(l: Line) -> None:

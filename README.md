@@ -11,7 +11,7 @@ PolyglotSound adapte une chanson en fon (ou yorùbá) dans une autre langue **qu
 | Dossier | Rôle | Port |
 |---|---|---|
 | `frontend/` | React + Vite + TypeScript + Tailwind : studio de l'artiste, atelier jury, vérificateur de filigrane | 5173 |
-| `backend/` | FastAPI léger : projets, étapes, moteur de syllabes et LLM (Llama via Groq), mixage ffmpeg, mode démo sans GPU | 8000 |
+| `backend/` | FastAPI léger : projets, étapes, moteur de syllabes et LLM (gpt-oss via Groq), mixage ffmpeg, mode démo sans GPU | 8000 |
 | `worker/` | FastAPI GPU (Colab / Kaggle) : Demucs, MMS, MMS_FA, NLLB-200, MMS-TTS, Seed-VC, AudioSeal | 9000 |
 | `docs/CONTRACT.md` | Contrat d'API commun | |
 

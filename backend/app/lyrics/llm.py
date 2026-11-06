@@ -11,6 +11,7 @@ Variables d'environnement :
 
 from __future__ import annotations
 
+import re
 import asyncio
 import json
 import os
@@ -24,7 +25,8 @@ ANTHROPIC_VERSION = "2026-10-21"
 ANTHROPIC_FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 _DEFAULT_MODELS = {
-    "groq": "llama-3.3-70b-versatile",
+    # Groq a retiré ses Llama de chat fin 2026 : gpt-oss-120b est le meilleur modèle ouvert disponible.
+    "groq": "openai/gpt-oss-120b",
     "anthropic": "claude-opus-5-5",
     "ollama": "llama3.2",
     "rule": None,
@@ -91,16 +93,21 @@ async def _groq(client: httpx.AsyncClient, system: str, user: str, model: str, t
     key = os.getenv("GROQ_API_KEY")
     if not key:
         raise LLMError("GROQ_API_KEY manquant")
+    body: dict[str, Any] = {
+        "model": model,
+        "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        "temperature": temperature,
+        "max_tokens": 1500,
+        "response_format": {"type": "json_object"},
+    }
+    if "gpt-oss" in model or "qwen3" in model:
+        # Modèles à raisonnement : les jetons de réflexion comptent dans max_tokens.
+        body["max_tokens"] = 6000
+        body["reasoning_effort"] = os.getenv("GROQ_REASONING_EFFORT", "low")
     r = await client.post(
         GROQ_URL,
         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        json={
-            "model": model,
-            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-            "temperature": temperature,
-            "max_tokens": 1500,
-            "response_format": {"type": "json_object"},
-        },
+        json=body,
     )
     r.raise_for_status()
     return r.json()["choices"][0]["message"]["content"]
@@ -164,18 +171,33 @@ async def chat_json(system: str, user: str, *, temperature: float = 0.8, provide
     p = provider or resolve_provider()
     if p not in _CALLS:
         raise LLMError(f"pas de LLM pour le fournisseur '{p}'")
-    model = _model_for(p)
+    models = [_model_for(p)]
+    if p == "groq":
+        # Palier gratuit Groq : 8000 jetons/min par modèle. En cas de quota, on bascule sur un second modèle.
+        alt = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-20b")
+        if alt and alt not in models:
+            models.append(alt)
     last: Exception | None = None
     async with httpx.AsyncClient(timeout=_timeout()) as client:
-        for attempt in range(2):
-            try:
-                raw = await _CALLS[p](client, system, user, model, temperature)
-                return extract_json(raw)
-            except Exception as e:  # réseau, HTTP, JSON
-                last = e
-                if isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (400, 401, 403, 404):
-                    break
-                if attempt == 0:
+        for model in models:
+            for attempt in range(3):
+                try:
+                    raw = await _CALLS[p](client, system, user, model, temperature)
+                    return extract_json(raw)
+                except Exception as e:  # réseau, HTTP, JSON
+                    last = e
+                    code = e.response.status_code if isinstance(e, httpx.HTTPStatusError) else None
+                    if code in (401, 403):
+                        break
+                    if code in (400, 404) and attempt > 0:
+                        break
+                    if code == 429:
+                        # Quota : on attend le délai demandé (plafonné) une fois, puis on change de modèle.
+                        if attempt > 0:
+                            break
+                        m = re.search(r"try again in ([0-9.]+)s", e.response.text)
+                        await asyncio.sleep(min(float(m.group(1)) if m else 5.0, 20.0) + 0.5)
+                        continue
                     await asyncio.sleep(1.0)
     detail = last
     if isinstance(last, httpx.HTTPStatusError):
