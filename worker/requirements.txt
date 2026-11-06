@@ -1,0 +1,46 @@
+# PolyglotSound worker GPU : dépendances (Colab / Kaggle, Python 3.10 à 3.12)
+#
+# NE PAS installer torch ici : on garde le torch CUDA préinstallé sur Colab/Kaggle.
+# torchaudio doit correspondre EXACTEMENT à la version de torch : le notebook l'installe
+# depuis l'index PyTorch adéquat s'il manque (voir PolyglotSound_Worker.ipynb).
+# Les bornes basses seules (>=) évitent que pip ne rétrograde les paquets de Colab.
+
+# Serveur
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+requests>=2.31
+
+# Audio de base (souvent déjà présents sur Colab)
+numpy>=1.24
+soundfile>=0.12
+librosa>=0.10
+
+# Modèles
+transformers>=4.40        # MMS-1b-all, MMS-TTS (VitsModel), NLLB-200
+sentencepiece>=0.1.99     # tokenizer NLLB (repli si tokenizer.json absent)
+demucs>=4.1.0             # 4.1.0 : plus de contrainte torchaudio<2.1 (4.0.1 en avait une)
+audioseal>=0.1.4
+uroman>=1.3.1
+torchcrepe>=0.0.23
+pyworld==0.3.5            # pas de roue Linux : compilé depuis les sources (~1 min, gcc présent sur Colab)
+
+# --- Seed-VC : dépendances du chemin d'inférence (inference.py, mode chant) ---
+# Ne PAS faire `pip install -r seed-vc/requirements.txt` : il épingle torch==2.4.0,
+# transformers==4.46.3, numpy==1.26.4 et casserait l'environnement Colab.
+munch>=4.0
+einops>=0.7
+hydra-core>=1.3
+pydub>=0.25
+argbind>=0.3.7
+julius>=0.2.7
+flatten-dict>=0.4
+ffmpy>=0.3
+pyloudnorm>=0.1
+randomname>=0.2
+markdown2>=2.4
+importlib-resources>=5.0
+pystoi>=0.3
+tensorboard>=2.10        # importé par audiotools.ml (déjà présent sur Colab/Kaggle)
+# À installer À PART avec --no-deps (descript-audiotools exige protobuf<3.20) :
+#   pip install --no-deps descript-audiotools==0.7.2 descript-audio-codec==1.0.0
