@@ -6,3 +6,4 @@ backend/data/
 *.pyc
 .env
 worker/watermark_messages.json
+.logs/
