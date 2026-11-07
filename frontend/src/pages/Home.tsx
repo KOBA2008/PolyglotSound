@@ -69,27 +69,27 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap items-center gap-2 text-sm">
             <ModeBadge mode={health?.mode} provider={health?.llm?.provider} model={health?.llm?.model} />
             {health && (
-              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-xs text-muted">
+              <span className="rounded-full border border-ink/10 bg-white/70 px-3 py-1 text-xs text-muted">
                 Worker GPU : {health.worker ? "connecté" : "absent"}
               </span>
             )}
           </div>
           <p className="mt-5 flex flex-wrap items-center gap-2 text-sm text-muted">
             Déjà pris en charge :
-            <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold">Yorùbá en priorité</span>
-            <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-xs font-semibold text-ink">Fon</span>
-            <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-xs font-semibold text-ink">Swahili</span>
+            <span className="rounded-full border border-gold/30 bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold-soft">Yorùbá en priorité</span>
+            <span className="rounded-full border border-ink/10 bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-ink">Fon</span>
+            <span className="rounded-full border border-ink/10 bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-ink">Swahili</span>
           </p>
         </div>
 
         <div className="glass relative overflow-hidden p-6 md:p-7">
-          <svg className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 opacity-30" viewBox="0 0 200 200" aria-hidden="true">
-            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(0,208,132,.5)" strokeWidth="1" />
-            <circle cx="100" cy="100" r="54" fill="none" stroke="rgba(255,215,0,.45)" strokeWidth="1" />
-            <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(255,59,48,.45)" strokeWidth="1" />
+          <svg className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 opacity-40" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(0,122,86,.28)" strokeWidth="1" />
+            <circle cx="100" cy="100" r="54" fill="none" stroke="rgba(168,111,0,.26)" strokeWidth="1" />
+            <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(207,46,34,.22)" strokeWidth="1" />
             {[0, 45, 90, 135, 180, 225, 270, 315].map((d) => {
               const a = (d * Math.PI) / 180;
-              return <circle key={d} cx={100 + 78 * Math.cos(a)} cy={100 + 78 * Math.sin(a)} r="2.4" fill={d % 90 === 0 ? "#ffd700" : "#00d084"} />;
+              return <circle key={d} cx={100 + 78 * Math.cos(a)} cy={100 + 78 * Math.sin(a)} r="2.4" fill={d % 90 === 0 ? "#a86f00" : "#007a56"} />;
             })}
           </svg>
           <div className="relative">
@@ -98,23 +98,23 @@ export default function Home() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Aperçu du studio</p>
                 <p className="mt-1 font-display text-xl font-extrabold">Yorùbá <span className="text-muted">→</span> Anglais</p>
               </div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-soft">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-brand shadow-[0_0_10px_#00d084]" aria-hidden="true" /> En direct
+              <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/8 px-3 py-1 text-xs font-semibold text-brand-soft">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-brand shadow-[0_0_0_3px_rgba(0,122,86,.14)]" aria-hidden="true" /> En direct
               </span>
             </div>
             <div className="mt-4 flex flex-wrap gap-1.5 text-xs">
-              <span className="rounded-full border border-gold/50 bg-gold/10 px-3 py-1 font-semibold text-gold">Yorùbá</span>
-              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1">Fon</span>
-              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1">Swahili</span>
-              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-muted">Français</span>
-              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-muted">Anglais</span>
+              <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 font-semibold text-gold-soft">Yorùbá</span>
+              <span className="rounded-full border border-ink/10 bg-white/70 px-3 py-1">Fon</span>
+              <span className="rounded-full border border-ink/10 bg-white/70 px-3 py-1">Swahili</span>
+              <span className="rounded-full border border-ink/10 bg-white/70 px-3 py-1 text-muted">Français</span>
+              <span className="rounded-full border border-ink/10 bg-white/70 px-3 py-1 text-muted">Anglais</span>
             </div>
             <div className="neo-inset mt-5 rounded-2xl p-4">
               <Wave bars={36} height={90} className="justify-between" />
               <div className="mt-5 space-y-2" aria-hidden="true">
                 {MOCK_TRACKS.map((t) => (
-                  <div key={t.label} className="flex items-center gap-2.5 rounded-xl border border-white/5 bg-white/[.02] px-2.5 py-2">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[.05] text-ink">
+                  <div key={t.label} className="flex items-center gap-2.5 rounded-xl border border-white/70 bg-white/55 px-2.5 py-2">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-ink shadow-sm">
                       <IconPlay size={10} />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -150,7 +150,7 @@ export default function Home() {
             <div key={t.n} className="glass group p-6 transition duration-200 hover:-translate-y-1">
               <div className="flex items-start justify-between gap-3">
                 <span className={`bg-gradient-to-r ${t.color} bg-clip-text font-display text-4xl font-extrabold text-transparent`}>{t.n}</span>
-                <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-[11px] font-semibold text-muted">{t.tag}</span>
+                <span className="rounded-full border border-ink/10 bg-white/70 px-2.5 py-0.5 text-[11px] font-semibold text-muted">{t.tag}</span>
               </div>
               <h3 className="mt-3 font-display text-xl font-extrabold">{t.title}</h3>
               <p className="mt-2 text-muted">{t.text}</p>
@@ -167,7 +167,7 @@ export default function Home() {
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => void load()}>Actualiser</button>
         </div>
-        {error && <p role="alert" className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</p>}
+        {error && <p role="alert" className="mt-4 rounded-xl border border-flame/30 bg-flame/8 p-3 text-sm text-flame-soft">{error}</p>}
         {projects === null && !error && (
           <>
             <p className="sr-only" role="status">Chargement des projets...</p>
@@ -231,7 +231,7 @@ export default function Home() {
                         <IconPlay size={12} /> Écouter le résultat
                       </Link>
                     )}
-                    <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted transition hover:bg-red-500/20 hover:text-red-300" aria-label={`Supprimer ${p.title}`}>
+                    <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted transition hover:bg-flame/10 hover:text-flame" aria-label={`Supprimer ${p.title}`}>
                       <IconTrash size={15} />
                     </button>
                   </div>

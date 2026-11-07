@@ -56,7 +56,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
           onClick={toggle}
           disabled={disabled}
           aria-label={playing ? "Pause" : "Lecture"}
-          className="grad flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-[0_10px_40px_-10px_rgba(0,208,132,.75)] transition hover:scale-105 disabled:opacity-40"
+          className="grad flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-[0_12px_28px_-12px_rgba(0,122,86,.55)] transition hover:scale-105 disabled:opacity-40"
         >
           {playing ? <IconPause size={24} /> : <IconPlay size={24} />}
         </button>
@@ -69,7 +69,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
               aria-checked={side === s}
               disabled={disabled}
               onClick={() => switchTo(s)}
-              className={`rounded-full px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-brand text-night" : "grad") : "text-muted hover:text-ink"}`}
+              className={`rounded-full px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-brand text-white" : "grad") : "text-muted hover:text-ink"}`}
             >
               {s === "A" ? labelA : labelB}
             </button>
@@ -87,7 +87,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
         onChange={(e) => seek(Number(e.target.value))}
         aria-label="Position de lecture"
         className="mt-4 h-2 w-full"
-        style={{ background: `linear-gradient(90deg, #00d084 ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
+        style={{ background: `linear-gradient(90deg, #007a56 ${pct}%, rgba(38,48,62,.12) ${pct}%)` }}
       />
       {disabled && <p className="mt-3 text-sm text-muted">La comparaison sera disponible après la finalisation.</p>}
       {!disabled && <p className="mt-3 text-sm text-muted">Basculez pendant la lecture : les deux versions restent calées au même instant.</p>}

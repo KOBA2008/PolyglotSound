@@ -6,7 +6,7 @@ export function SyllableCountBadge({ count, target }: { count: number; target: n
   const ok = count === target;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold ${ok ? "border-mint/60 bg-mint/15 text-mint" : "border-red-400/60 bg-red-500/15 text-red-300"}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold ${ok ? "border-mint/30 bg-mint/10 text-mint" : "border-flame/30 bg-flame/10 text-flame-soft"}`}
       aria-label={`${count} syllabes sur ${target}${ok ? ", compte exact" : ", compte incorrect"}`}
     >
       {count}/{target}{ok ? " syllabes ✓" : ""}
@@ -37,7 +37,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
       type={onSelect ? "button" : undefined}
       onClick={onSelect}
       aria-pressed={onSelect ? !!selected : undefined}
-      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:bg-white/[.06]" : ""} ${selected ? "!border-brand ring-2 ring-brand/50 shadow-[0_0_30px_-8px_rgba(0,208,132,.65)]" : ""}`}
+      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:bg-white/60" : ""} ${selected ? "!border-brand ring-2 ring-brand/30 shadow-[0_12px_26px_-16px_rgba(0,122,86,.55)]" : ""}`}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -46,7 +46,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
         <div className="flex items-center gap-2">
           <SyllableCountBadge count={count} target={target} />
           {selected && (
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-night"><IconCheck size={14} /></span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white"><IconCheck size={14} /></span>
           )}
         </div>
       </div>

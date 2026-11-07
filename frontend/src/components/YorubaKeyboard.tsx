@@ -16,7 +16,7 @@ export default function YorubaKeyboard({ onInsert, label = "Clavier yorùbá" }:
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onInsert(ch)}
             aria-label={`Insérer ${ch}`}
-            className="flex h-10 min-w-10 items-center justify-center rounded-lg border border-white/5 bg-gradient-to-br from-surface-2 to-surface px-1 text-[15px] font-semibold text-ink shadow-[3px_3px_8px_rgba(1,4,10,.6),-2px_-2px_6px_rgba(58,76,108,.15)] transition hover:text-brand-soft hover:ring-1 hover:ring-brand/40 active:shadow-[inset_2px_2px_5px_rgba(1,4,10,.7)]"
+            className="neo-chip flex h-10 min-w-10 items-center justify-center rounded-lg px-1 text-[15px] font-semibold text-ink transition hover:text-brand-soft hover:ring-1 hover:ring-brand/30 active:shadow-[inset_2px_2px_5px_rgba(163,177,198,.55)]"
           >
             {ch}
           </button>

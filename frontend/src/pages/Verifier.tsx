@@ -21,11 +21,11 @@ export default function Verifier() {
   let verdict: { tone: string; icon: ReactNode; title: string; text: string } | null = null;
   if (res) {
     if (res.detected) {
-      verdict = { tone: "border-mint/60 bg-mint/10 text-mint", icon: <IconShield size={40} />, title: "Version autorisée PolyglotSound", text: "Ce fichier porte le filigrane AudioSeal d'une adaptation validée par l'artiste." };
+      verdict = { tone: "border-mint/30 bg-mint/8 text-mint", icon: <IconShield size={40} />, title: "Version autorisée PolyglotSound", text: "Ce fichier porte le filigrane AudioSeal d'une adaptation validée par l'artiste." };
     } else if (res.mode === "demo") {
-      verdict = { tone: "border-gold/60 bg-gold/10 text-gold", icon: <IconAlert size={40} />, title: "Mode démo", text: "La détection AudioSeal demande le worker GPU. Aucun verdict fiable n'est possible pour l'instant." };
+      verdict = { tone: "border-gold/30 bg-gold/8 text-gold-soft", icon: <IconAlert size={40} />, title: "Mode démo", text: "La détection AudioSeal demande le worker GPU. Aucun verdict fiable n'est possible pour l'instant." };
     } else {
-      verdict = { tone: "border-red-400/60 bg-red-500/10 text-red-300", icon: <IconX size={40} />, title: "Aucun filigrane détecté", text: "Ce fichier ne provient pas d'une adaptation PolyglotSound signée, ou il a été fortement altéré." };
+      verdict = { tone: "border-flame/30 bg-flame/8 text-flame-soft", icon: <IconX size={40} />, title: "Aucun filigrane détecté", text: "Ce fichier ne provient pas d'une adaptation PolyglotSound signée, ou il a été fortement altéré." };
     }
   }
 
@@ -41,7 +41,7 @@ export default function Verifier() {
         <button type="button" className="btn btn-primary w-full py-3" disabled={!file || loading} onClick={() => void check()}>
           {loading ? <IconLoader size={18} /> : <IconShield size={18} />} {loading ? "Analyse..." : "Vérifier"}
         </button>
-        {error && <p role="alert" className="rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</p>}
+        {error && <p role="alert" className="rounded-xl border border-flame/30 bg-flame/8 p-3 text-sm text-flame-soft">{error}</p>}
       </div>
       {verdict && res && (
         <div className={`fade-in flex items-start gap-5 rounded-3xl border-2 p-6 ${verdict.tone}`} role="status">
@@ -55,7 +55,7 @@ export default function Verifier() {
                 <div className="neo-well mt-1 h-2 overflow-hidden"><div className="grad h-full rounded-full" style={{ width: `${Math.min(100, (res.confidence ?? 0) * 100)}%` }} /></div>
               </div>
             )}
-            {res.message && <p className="mt-3 text-sm">Message embarqué : <code className="rounded bg-night/90 px-1.5 py-0.5">{res.message}</code></p>}
+            {res.message && <p className="mt-3 text-sm">Message embarqué : <code className="rounded border border-ink/10 bg-white/70 px-1.5 py-0.5">{res.message}</code></p>}
           </div>
         </div>
       )}

@@ -61,9 +61,9 @@ export default function Atelier() {
         <div>
           <p className="kicker">Démo live · Yorùbá en priorité</p>
           <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">Proposez une <span className="grad-text">phrase</span></h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure. La phrase originale s'écrit en <strong className="font-semibold text-gold">yorùbá</strong>.</p>
+          <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure. La phrase originale s'écrit en <strong className="font-semibold text-gold-soft">yorùbá</strong>.</p>
           <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">
-            <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold">Yorùbá en priorité</span>
+            <span className="rounded-full border border-gold/25 bg-gold/8 px-2.5 py-0.5 text-xs font-semibold text-gold-soft">Yorùbá en priorité</span>
             Déjà pris en charge : Fon, Swahili
           </p>
         </div>
@@ -81,12 +81,12 @@ export default function Atelier() {
             <input ref={origRef} id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
             <YorubaKeyboard onInsert={insertYoruba} label="Clavier yorùbá de la phrase originale" />
             <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
-              <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 font-mono text-xs font-bold text-gold">
+              <span className="rounded-full border border-gold/25 bg-gold/8 px-2.5 py-0.5 font-mono text-xs font-bold text-gold-soft">
                 {yor.loading && yor.count === null ? "…" : yor.error ? "?" : yorCount} syllabe{yorCount > 1 ? "s" : ""}
               </span>
               <span className="text-[11px] text-muted">{yor.loading ? "comptage en cours" : "en yorùbá · mise à jour 300 ms"}</span>
               {yor.split.map((s, i) => (
-                <span key={i} className="rounded-md bg-white/[.06] px-1.5 py-0.5 text-xs text-muted">{s}</span>
+                <span key={i} className="rounded-md border border-ink/5 bg-white/60 px-1.5 py-0.5 text-xs text-muted">{s}</span>
               ))}
               {yor.error && <span className="text-xs text-flame-soft">compteur indisponible</span>}
             </div>
@@ -129,7 +129,7 @@ export default function Atelier() {
         </div>
       </form>
 
-      {error && <p role="alert" className="rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-red-200">{error}</p>}
+      {error && <p role="alert" className="rounded-xl border border-flame/30 bg-flame/8 p-3 text-flame-soft">{error}</p>}
 
       {variants && (
         <section aria-labelledby="var-h" aria-live="polite">

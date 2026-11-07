@@ -65,7 +65,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
     >
       {project.steps.separate.status !== "done" && <p className="mb-4 text-sm text-muted">Terminez d'abord la séparation : la transcription travaille sur la voix isolée.</p>}
       {project.mode === "demo" && (
-        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
+        <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
           Tapez les paroles, la transcription automatique demande le worker GPU. Les lignes sont détectées à partir des silences de la voix.
         </p>
       )}
@@ -92,7 +92,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
                 </button>
                 {playing && (
                   <div className="neo-well h-1 w-32 overflow-hidden" aria-hidden="true">
-                    <div className="h-full bg-mint" style={{ width: `${Math.min(100, ((player.time - line.start) / (line.end - line.start)) * 100)}%` }} />
+                    <div className="h-full bg-brand" style={{ width: `${Math.min(100, ((player.time - line.start) / (line.end - line.start)) * 100)}%` }} />
                   </div>
                 )}
               </div>
@@ -113,7 +113,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
         })}
       </ol>
       {drafts.length > 0 && (
-        <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/5 bg-night-2/95 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] backdrop-blur">
+        <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
           <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || !dirty}>
             {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les corrections
           </button>
@@ -136,12 +136,12 @@ function SyllableCounter({ text, lang }: { text: string; lang: string }) {
   if (!text.trim()) return null;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
-      <span className="rounded-full border border-brand/30 bg-brand/15 px-2 py-0.5 font-mono text-xs font-bold text-brand-soft">
+      <span className="rounded-full border border-brand/25 bg-brand/8 px-2 py-0.5 font-mono text-xs font-bold text-brand-soft">
         {loading && count === null ? "..." : error ? "?" : count} syllabe{count === 1 ? "" : "s"}
       </span>
       {loading && <IconLoader size={12} className="text-muted" />}
       {split.map((s, i) => (
-        <span key={i} className="rounded-md bg-white/[.06] px-1.5 py-0.5 text-xs text-muted">{s}</span>
+        <span key={i} className="rounded-md border border-ink/5 bg-white/60 px-1.5 py-0.5 text-xs text-muted">{s}</span>
       ))}
     </div>
   );

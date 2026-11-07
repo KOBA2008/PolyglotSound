@@ -17,7 +17,7 @@ export default function DropZone({ file, onFile, label = "Glissez votre fichier 
         const f = e.dataTransfer.files?.[0];
         if (f) onFile(f);
       }}
-      className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${over ? "border-brand bg-brand/10" : "border-white/10 bg-night/40"}`}
+      className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${over ? "border-brand bg-brand/8" : "border-ink/15 bg-white/45"}`}
     >
       <IconUpload size={28} className="text-brand-soft" />
       <div>

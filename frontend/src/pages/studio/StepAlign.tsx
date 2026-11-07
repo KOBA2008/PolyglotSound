@@ -22,7 +22,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
     <StepCard
       number={4}
       title="Grille musicale"
-      subtitle="Chaque syllabe devient une case, aussi longue que la note chantée. En gold, les temps forts : la traduction devra y placer ses accents."
+      subtitle="Chaque syllabe devient une case, aussi longue que la note chantée. En or, les temps forts : la traduction devra y placer ses accents."
       state={st}
       onRun={() => void run("align")}
       runLabel="Construire la grille"
@@ -32,7 +32,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
     >
       {!lines.length && <p className="text-muted">Il faut d'abord des lignes transcrites (étape 3).</p>}
       {missingText > 0 && (
-        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
+        <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
           {missingText} ligne{missingText > 1 ? "s n'ont" : " n'a"} pas encore de paroles : complétez-les à l'étape 3 puis reconstruisez la grille.
         </p>
       )}
@@ -67,14 +67,14 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
                 {lines.map((l) => (
                   <div
                     key={l.index}
-                    className={`absolute inset-y-0 flex items-center justify-center overflow-hidden rounded-md border text-[11px] font-bold transition ${now !== null && now >= l.start && now < l.end ? "border-mint bg-mint/30" : "border-brand-soft/40 bg-brand/30"}`}
+                    className={`absolute inset-y-0 flex items-center justify-center overflow-hidden rounded-md border text-[11px] font-bold transition ${now !== null && now >= l.start && now < l.end ? "border-brand bg-brand/15" : "border-brand/25 bg-brand/8"}`}
                     style={{ left: `${(l.start / duration) * 100}%`, width: `${((l.end - l.start) / duration) * 100}%` }}
                     title={l.text}
                   >
                     {l.index + 1}
                   </div>
                 ))}
-                {now !== null && <div className="absolute -top-16 bottom-0 w-0.5 bg-mint shadow-[0_0_10px_#8cffc1]" style={{ left: `${(now / duration) * 100}%` }} />}
+                {now !== null && <div className="absolute -top-16 bottom-0 w-0.5 bg-brand shadow-[0_0_0_2px_rgba(255,255,255,.7)]" style={{ left: `${(now / duration) * 100}%` }} />}
               </div>
             </div>
           </div>
@@ -98,8 +98,8 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
                     <span className="font-display text-sm font-extrabold text-brand-soft">Ligne {l.index + 1}</span>
                     <span className="font-display text-lg font-bold">{l.text || <em className="text-muted">sans paroles</em>}</span>
                     <span className="ml-auto flex items-center gap-2 text-xs text-muted">
-                      <span className="rounded-full bg-white/[.06] px-2 py-0.5 font-mono">{l.n_syllables} syllabes</span>
-                      <span className="rounded-full bg-gold/20 px-2 py-0.5 font-mono text-gold">{l.stress_positions?.length ?? 0} temps forts</span>
+                      <span className="rounded-full border border-ink/5 bg-white/60 px-2 py-0.5 font-mono">{l.n_syllables} syllabes</span>
+                      <span className="rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 font-mono text-gold-soft">{l.stress_positions?.length ?? 0} temps forts</span>
                       <span className="font-mono">{fmtSec(l.start)} à {fmtSec(l.end)}</span>
                     </span>
                   </div>
@@ -128,10 +128,10 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
 function Legend({ pitch }: { pitch: boolean }) {
   return (
     <div className="mt-5 flex flex-wrap items-center gap-5 text-sm text-muted">
-      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded bg-gradient-to-b from-gold-soft to-gold" /> Temps fort</span>
-      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded border border-brand-soft/40 bg-brand/20" /> Temps faible</span>
+      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded bg-gradient-to-b from-gold to-gold-soft" /> Temps fort</span>
+      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded border border-brand/25 bg-brand/8" /> Temps faible</span>
       {pitch && <span className="flex items-center gap-2"><span className="h-1 w-6 rounded bg-gradient-to-r from-teal via-mint to-gold" /> Mélodie de la voix (f0)</span>}
-      <span className="flex items-center gap-2"><span className="h-4 w-0.5 bg-mint" /> Lecture en cours</span>
+      <span className="flex items-center gap-2"><span className="h-4 w-0.5 bg-brand" /> Lecture en cours</span>
     </div>
   );
 }

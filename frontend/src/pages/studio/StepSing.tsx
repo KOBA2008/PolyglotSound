@@ -61,7 +61,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             role="radio"
             aria-checked={mode === k}
             onClick={() => setMode(k)}
-            className={`glass flex items-start gap-3 p-4 text-left transition ${mode === k ? "!border-brand ring-2 ring-brand/50" : "hover:bg-white/[.06]"}`}
+            className={`glass flex items-start gap-3 p-4 text-left transition ${mode === k ? "!border-brand ring-2 ring-brand/25" : "hover:bg-white/60"}`}
           >
             <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${mode === k ? "grad" : "neo-inset"}`}><Icon size={18} /></span>
             <span>
@@ -73,7 +73,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
       </div>
 
       {mode === "auto" && project.mode === "demo" && (
-        <p className="mt-4 flex items-start gap-2 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
+        <p className="mt-4 flex items-start gap-2 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
           <IconAlert size={16} className="mt-0.5 shrink-0" /> Le mode Auto demande le worker GPU (synthèse vocale et conversion de voix). En mode démo, utilisez le mode Studio.
         </p>
       )}
@@ -106,7 +106,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             )}
             <LyricsPrompt lines={project.lines.map((l) => l.chosen || "")} />
           </div>
-          {upErr && <p role="alert" className="text-sm text-red-300 lg:col-span-2">{upErr}</p>}
+          {upErr && <p role="alert" className="text-sm text-flame lg:col-span-2">{upErr}</p>}
           <div className="lg:col-span-2">
             <AudioPlayer src={fileUrl(project.files.guide)} label={hasGuide ? "Voix guide enregistrée" : "Voix guide (à déposer)"} accent="flame" />
           </div>

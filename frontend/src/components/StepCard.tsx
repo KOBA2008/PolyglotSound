@@ -51,7 +51,7 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
               className="pulse-bar h-full rounded-full transition-all"
               style={{
                 width: `${Math.max(state!.progress || 0, 8)}%`,
-                backgroundImage: "linear-gradient(90deg,#00d084,#ffd700,#ff3b30,#00d084)",
+                backgroundImage: "linear-gradient(90deg,#007a56,#a86f00,#cf2e22,#007a56)",
               }}
             />
           </div>
@@ -60,12 +60,12 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
       )}
       {done && state?.message && <p className="mt-4 text-sm text-muted" aria-live="polite">{state.message}</p>}
       {(failed || error) && (
-        <div role="alert" className="mt-4 flex items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-200">
+        <div role="alert" className="mt-4 flex items-start gap-3 rounded-xl border border-flame/30 bg-flame/8 p-3 text-sm text-flame-soft">
           <IconAlert size={18} className="mt-0.5 shrink-0" />
           <div>
             <div className="font-semibold">{failed ? "L'étape a échoué" : "Erreur"}</div>
             <div>{error || state?.message || "Erreur inconnue."}</div>
-            {failed && onRun && <div className="mt-1 text-red-300/80">Vous pouvez corriger puis relancer l'étape.</div>}
+            {failed && onRun && <div className="mt-1 text-flame">Vous pouvez corriger puis relancer l'étape.</div>}
           </div>
         </div>
       )}

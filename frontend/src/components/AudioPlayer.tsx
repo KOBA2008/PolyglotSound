@@ -99,7 +99,7 @@ export default function AudioPlayer({ src, label, accent = "gold", download, ref
           type="button"
           onClick={toggle}
           aria-label={playing ? `Pause : ${label}` : `Lire : ${label}`}
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${ACCENTS[accent]} text-night shadow-lg transition hover:scale-105`}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${ACCENTS[accent]} text-white shadow-[0_6px_14px_-6px_rgba(38,48,62,.45)] transition hover:scale-105`}
         >
           {playing ? <IconPause size={16} /> : <IconPlay size={16} />}
         </button>
@@ -120,9 +120,9 @@ export default function AudioPlayer({ src, label, accent = "gold", download, ref
               if (a) a.currentTime = Number(e.target.value);
             }}
             className="mt-1 h-1.5 w-full cursor-pointer"
-            style={{ background: `linear-gradient(90deg, #00d084 ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
+            style={{ background: `linear-gradient(90deg, #007a56 ${pct}%, rgba(38,48,62,.12) ${pct}%)` }}
           />
-          {err && <div className="mt-1 text-xs text-red-300">Fichier audio illisible ou introuvable.</div>}
+          {err && <div className="mt-1 text-xs text-flame">Fichier audio illisible ou introuvable.</div>}
         </div>
         {download && (
           <a href={src} download className="btn btn-ghost btn-sm" aria-label={`Télécharger ${label}`}>

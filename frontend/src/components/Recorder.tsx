@@ -67,11 +67,11 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
             <IconMic size={16} className="text-gold" /> Enregistrer au micro
           </button>
         ) : (
-          <button type="button" className="btn bg-red-600 text-white hover:bg-red-500" onClick={stop}>
+          <button type="button" className="btn bg-flame text-white hover:bg-flame/90" onClick={stop}>
             <IconStop size={14} /> Arrêter ({fmtTime(elapsed)})
           </button>
         )}
-        {rec && <span className="flex items-center gap-2 text-sm text-red-300"><span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500" /> Enregistrement</span>}
+        {rec && <span className="flex items-center gap-2 text-sm text-flame"><span className="h-2.5 w-2.5 animate-pulse rounded-full bg-flame" /> Enregistrement</span>}
       </div>
       {backing && (
         <label className="flex items-center gap-2 text-sm text-muted">
@@ -79,7 +79,7 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
           Jouer l'instrumentale pendant l'enregistrement (casque conseillé)
         </label>
       )}
-      {error && <p role="alert" className="text-sm text-red-300">{error}</p>}
+      {error && <p role="alert" className="text-sm text-flame">{error}</p>}
     </div>
   );
 }

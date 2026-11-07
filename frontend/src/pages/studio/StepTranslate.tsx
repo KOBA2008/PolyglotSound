@@ -81,7 +81,7 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
               <LineTranslate key={l.index} line={l} lang={project.target_lang} choice={choices[l.index] ?? ""} onChoose={(t) => choose(l.index, t)} />
             ))}
           </ol>
-          <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/5 bg-night-2/95 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] backdrop-blur">
+          <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
             <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || (!dirty && saved)}>
               {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les choix
             </button>

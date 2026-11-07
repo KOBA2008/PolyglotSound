@@ -16,7 +16,7 @@ export default function StepSeparate({ project, run, busy, errors, fileUrl }: St
       error={errors.separate}
     >
       {project.mode === "demo" && (
-        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
+        <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
           Mode démo : séparation approximative par annulation de phase. Le worker GPU utilise Demucs pour une séparation studio.
         </p>
       )}

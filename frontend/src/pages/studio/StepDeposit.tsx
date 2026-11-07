@@ -24,7 +24,7 @@ export default function StepDeposit({ project, onCreated, fileUrl }: Props) {
             ["Langues", `${langLabel(project.source_lang)} → ${langLabel(project.target_lang)}`],
             ["Durée", project.duration ? `${project.duration.toFixed(1)} s` : "inconnue"],
           ].map(([k, v]) => (
-            <div key={k} className="rounded-xl bg-white/5 p-3">
+            <div key={k} className="rounded-xl border border-white/70 bg-white/60 p-3">
               <dt className="label">{k}</dt>
               <dd className="font-semibold">{v}</dd>
             </div>
@@ -102,7 +102,7 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
         </div>
         <div className="space-y-4">
           <DropZone file={file} onFile={setFile} />
-          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${consent ? "border-mint/50 bg-mint/10" : "border-white/15 bg-white/[.03]"}`}>
+          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${consent ? "border-mint/30 bg-mint/8" : "border-ink/10 bg-white/50"}`}>
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 shrink-0" required />
             <span className="text-sm">
               <span className="font-semibold">Je certifie être l'artiste ou disposer de son accord pour utiliser sa voix</span>

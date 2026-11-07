@@ -114,7 +114,7 @@ export default function Studio() {
   if (!isNew && loadError) {
     return (
       <div className="glass mx-auto mt-10 max-w-xl p-8 text-center" role="alert">
-        <IconAlert size={28} className="mx-auto text-red-300" />
+        <IconAlert size={28} className="mx-auto text-flame" />
         <h1 className="mt-3 font-display text-2xl font-extrabold">Projet introuvable</h1>
         <p className="mt-2 text-muted">{loadError}</p>
         <Link to="/" className="btn btn-primary mt-5">Retour à l'accueil</Link>
@@ -133,16 +133,16 @@ export default function Studio() {
       <aside className="lg:sticky lg:top-4 lg:self-start">
         <div className="glass p-4">
           {project ? (
-            <div className="mb-4 border-b border-white/10 pb-4">
+            <div className="mb-4 border-b border-ink/10 pb-4">
               <div className="truncate font-display text-lg font-extrabold">{project.title}</div>
               <div className="truncate text-sm text-muted">{project.artist}</div>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="rounded-full bg-white/8 px-2 py-0.5">{langLabel(project.source_lang)} → {langLabel(project.target_lang)}</span>
+                <span className="rounded-full border border-ink/10 bg-white/70 px-2 py-0.5">{langLabel(project.source_lang)} → {langLabel(project.target_lang)}</span>
                 <ModeBadge mode={project.mode} compact />
               </div>
             </div>
           ) : (
-            <div className="mb-4 border-b border-white/10 pb-4">
+            <div className="mb-4 border-b border-ink/10 pb-4">
               <div className="font-display text-lg font-extrabold">Nouvelle adaptation</div>
               <div className="text-sm text-muted">Le parcours de l'artiste en 7 étapes</div>
             </div>
@@ -159,10 +159,10 @@ export default function Studio() {
                     disabled={disabled}
                     onClick={() => goTo(i)}
                     aria-current={current ? "step" : undefined}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "bg-brand/10 ring-1 ring-brand/40" : "hover:bg-white/6"}`}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "neo-chip ring-1 ring-brand/20" : "hover:bg-white/60"}`}
                   >
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                      st === "done" ? "bg-mint text-night" : st === "running" ? "bg-teal/30 text-teal" : st === "error" ? "bg-red-500/70 text-white" : current ? "grad" : "bg-white/10 text-muted"}`}>
+                      st === "done" ? "bg-mint text-white" : st === "running" ? "bg-teal/15 text-teal" : st === "error" ? "bg-flame text-white" : current ? "grad" : "neo-inset text-muted"}`}>
                       {st === "done" ? <IconCheck size={15} /> : st === "running" ? <IconLoader size={15} /> : st === "error" ? "!" : i + 1}
                     </span>
                     <span className="min-w-0">
@@ -175,7 +175,7 @@ export default function Studio() {
             })}
           </ol>
           {project && (
-            <div className="mt-4 hidden border-t border-white/10 pt-4 lg:block">
+            <div className="mt-4 hidden border-t border-ink/10 pt-4 lg:block">
               <div className="neo-well h-1.5 overflow-hidden">
                 <div className="grad h-full rounded-full transition-all" style={{ width: `${(STEP_ORDER.filter((s) => project.steps?.[s]?.status === "done").length / STEP_ORDER.length) * 100}%` }} />
               </div>
