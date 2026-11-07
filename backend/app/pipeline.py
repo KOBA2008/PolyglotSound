@@ -362,7 +362,7 @@ async def step_sing(pid: str, body: dict[str, Any]) -> str:
             raise StepError("Déposez d'abord une voix guide chantée dans la langue cible.")
         if live:
             _set_step(pid, "sing", progress=20, message="Conversion de voix Seed-VC sur le worker GPU...")
-            data = await worker.convert(guide, reference)
+            data = await worker.convert(guide, reference, int(body.get("semitones", 0)))
             await asyncio.to_thread(audio.write_wav_bytes, data, sung, 1)
             msg = "La voix guide chante maintenant avec le timbre de l'artiste (Seed-VC)."
         else:
