@@ -449,11 +449,12 @@ async def step_finalize(pid: str, body: dict[str, Any]) -> str:
         if ref is not None and voice != ref:
             _set_step(pid, "finalize", progress=5, message="Recalage du tempo phrase par phrase (Rubber Band)...")
             spans = [(l.start, l.end) for l in p.lines if l.end > l.start]
-            if spans:
+            if spans and body.get("align", True):
                 voice, _ = await asyncio.to_thread(audio.phrase_align, voice, ref, spans, _path(pid, "voice_aligned.wav"))
             _set_step(pid, "finalize", progress=10, message="Calage du phrasé sur la voix d'origine...")
-            gated = _path(pid, "voice_gated.wav")
-            voice = await asyncio.to_thread(audio.phrase_gate, voice, ref, gated)
+            if body.get("gate", True):
+                gated = _path(pid, "voice_gated.wav")
+                voice = await asyncio.to_thread(audio.phrase_gate, voice, ref, gated)
         _set_step(pid, "finalize", progress=20, message="Mixage studio (EQ, compression, réverb, sidechain)...")
         await asyncio.to_thread(audio.mix_pro, voice, instr, mixed, voice_vol, instr_vol)
     else:
