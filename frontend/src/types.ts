@@ -1,7 +1,7 @@
 // Types du contrat docs/CONTRACT.md
 
-export type SourceLang = "fon" | "yor" | "fra" | "eng";
-export type TargetLang = "eng" | "fra" | "fon";
+export type SourceLang = "fon" | "yor" | "swh" | "fra" | "eng";
+export type TargetLang = "eng" | "fra" | "fon" | "yor" | "swh";
 export type Mode = "demo" | "live";
 export type StepStatus = "pending" | "running" | "done" | "error";
 export type StepName = "separate" | "transcribe" | "align" | "translate" | "sing" | "finalize";
@@ -104,6 +104,7 @@ export const STEP_ORDER: StepName[] = ["separate", "transcribe", "align", "trans
 export const SOURCE_LANGS: { code: SourceLang; label: string }[] = [
   { code: "fon", label: "Fon" },
   { code: "yor", label: "Yorùbá" },
+  { code: "swh", label: "Swahili" },
   { code: "fra", label: "Français" },
   { code: "eng", label: "Anglais" },
 ];
@@ -112,6 +113,8 @@ export const TARGET_LANGS: { code: TargetLang; label: string }[] = [
   { code: "eng", label: "Anglais" },
   { code: "fra", label: "Français" },
   { code: "fon", label: "Fon" },
+  { code: "yor", label: "Yorùbá" },
+  { code: "swh", label: "Swahili" },
 ];
 
 export function langLabel(code: string): string {

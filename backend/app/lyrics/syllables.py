@@ -1,4 +1,4 @@
-"""Compteur et découpeur de syllabes CHANTÉES pour fon, yorùbá, français, anglais.
+"""Compteur et découpeur de syllabes CHANTÉES pour fon, yorùbá, swahili, français, anglais.
 
 Garantie centrale : ``count_syllables(text, lang) == len(split_syllables(text, lang))``
 pour tout texte (le compte est défini comme la longueur du découpage).
@@ -46,6 +46,14 @@ Fon (fon) et yorùbá (yor)
     "ny" (digramme) n'est jamais syllabique.
   * Digrammes consonantiques fon (gb, kp, ny, xw, hw...) : toutes les consonnes
     entre deux voyelles vont en attaque de la syllabe suivante (structure CV).
+
+Swahili (swh)
+  * Structure CV stricte, pas de ton : chaque voyelle = 1 syllabe ("kuimba" =
+    ku-i-mba), aucune consonne en coda ("asante" = a-sa-nte).
+  * m syllabique devant consonne sauf b et w ("mtoto" = m-to-to, "kumpenda" =
+    ku-m-pe-nda, mais "mwana" = mwa-na, "mbuzi" = mbu-zi).
+  * n syllabique seulement en début de mot devant une consonne autre que
+    d, g, j, z, y ("nchi" = n-chi, "nne" = n-ne, mais "ndoto" = ndo-to).
 """
 
 from __future__ import annotations
@@ -66,13 +74,14 @@ _LANG_ALIASES = {
     "français": "fra",
     "fon": "fon", "fon_latn": "fon", "fongbe": "fon", "fɔngbe": "fon",
     "yor": "yor", "yo": "yor", "yoruba": "yor", "yorùbá": "yor", "yor_latn": "yor",
+    "swh": "swh", "sw": "swh", "swa": "swh", "swahili": "swh", "kiswahili": "swh", "swh_latn": "swh",
 }
 
 _APOS = "'’ʼ"
 
 
 def normalize_lang(lang: str) -> str:
-    """Ramène un code langue vers fon|yor|fra|eng (défaut : fon, compteur CV générique)."""
+    """Ramène un code langue vers fon|yor|swh|fra|eng (défaut : fon, compteur CV générique)."""
     return _LANG_ALIASES.get((lang or "").strip().lower(), "fon")
 
 
@@ -424,6 +433,11 @@ def _cv_word_split(word: str, lang: str) -> list[str]:
             continue
         if b == "n" and i + 1 < len(cl) and bases[i + 1] == "y":
             continue  # digramme ny
+        if lang == "swh":
+            nxt = bases[i + 1] if i + 1 < len(cl) else ""
+            if len(cl) == 1 or (b == "m" and nxt and nxt not in "bw")                     or (b == "n" and i == 0 and nxt and nxt not in "dgjzy"):
+                nucleus[i] = True
+            continue
         toned = any(m in _TONE_MARKS for m in marks)
         alone = len(cl) == 1
         if alone or (toned and not prev_v):
@@ -439,7 +453,7 @@ def _cv_word_split(word: str, lang: str) -> list[str]:
     bounds = []
     for k1, k2 in zip(idx, idx[1:]):
         start = k1 + 1
-        if start < k2 and bases[start] in "nm" and is_v[k1] and not nucleus[start] and start + 1 <= k2 \
+        if lang != "swh" and start < k2 and bases[start] in "nm" and is_v[k1] and not nucleus[start] and start + 1 <= k2 \
                 and not (start + 1 < len(bases) and bases[start + 1] == "y"):
             # nasale coda (an, ɛn...) si suivie d'une consonne
             if start + 1 < k2 or not is_v[k2]:

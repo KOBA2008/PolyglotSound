@@ -66,7 +66,7 @@ export default function Atelier() {
             <textarea id="meaning" rows={3} className="field text-lg" value={meaning} onChange={(e) => setMeaning(e.target.value)} placeholder="Ex. L'amour est une rivière qui ne tarit jamais" required />
           </div>
           <div>
-            <label htmlFor="orig" className="label">Phrase originale (facultatif, en fon ou yorùbá)</label>
+            <label htmlFor="orig" className="label">Phrase originale (facultatif, en fon, yorùbá ou swahili)</label>
             <input id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
           </div>
           <div className="flex flex-wrap gap-2">

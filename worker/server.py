@@ -53,20 +53,21 @@ RUNNER = os.path.join(WORKER_DIR, "seedvc_runner.py")
 # --------------------------------------------------------------------------------------
 # Langues
 # --------------------------------------------------------------------------------------
-LANGS = ("fon", "yor", "fra", "eng")
+LANGS = ("fon", "yor", "swh", "fra", "eng")
 _LANG_ALIASES = {
     "fon": "fon", "fon_latn": "fon", "fongbe": "fon",
     "yor": "yor", "yo": "yor", "yor_latn": "yor", "yoruba": "yor",
+    "swh": "swh", "sw": "swh", "swa": "swh", "swh_latn": "swh", "swahili": "swh", "kiswahili": "swh",
     "fra": "fra", "fr": "fra", "fre": "fra", "fra_latn": "fra", "french": "fra",
     "eng": "eng", "en": "eng", "eng_latn": "eng", "english": "eng",
 }
-NLLB_CODES = {"fon": "fon_Latn", "yor": "yor_Latn", "fra": "fra_Latn", "eng": "eng_Latn"}
+NLLB_CODES = {"fon": "fon_Latn", "yor": "yor_Latn", "swh": "swh_Latn", "fra": "fra_Latn", "eng": "eng_Latn"}
 
 
 def norm_lang(lang: Optional[str]) -> str:
     key = (lang or "").strip().lower()
     if key not in _LANG_ALIASES:
-        raise HTTPException(400, f"Langue non prise en charge : '{lang}'. Valeurs possibles : fon, yor, fra, eng.")
+        raise HTTPException(400, f"Langue non prise en charge : '{lang}'. Valeurs possibles : fon, yor, swh, fra, eng.")
     return _LANG_ALIASES[key]
 
 
@@ -788,7 +789,7 @@ def translate(body: TranslateBody):
 
 
 # --------------------------------------------------------------------------------------
-# /tts : MMS-TTS (VitsModel) facebook/mms-tts-{eng,fra,fon,yor}
+# /tts : MMS-TTS (VitsModel) facebook/mms-tts-{eng,fra,fon,yor,swh}
 # --------------------------------------------------------------------------------------
 def _load_tts(lang: str):
     from transformers import AutoTokenizer, VitsModel

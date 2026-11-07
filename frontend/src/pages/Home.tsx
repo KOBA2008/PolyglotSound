@@ -9,7 +9,7 @@ import { ModeBadge } from "../components/StatusBadge";
 import { IconArrowRight, IconMusic, IconTrash } from "../components/icons";
 
 const TEMPS = [
-  { n: "01", title: "Comprendre", text: "Séparation de la voix et de l'instrumentale, transcription du fon ou du yorùbá, sens en français. L'artiste corrige chaque ligne.", color: "from-violet to-cyan" },
+  { n: "01", title: "Comprendre", text: "Séparation de la voix et de l'instrumentale, transcription du fon, du yorùbá ou du swahili, sens en français. L'artiste corrige chaque ligne.", color: "from-violet to-cyan" },
   { n: "02", title: "Adapter", text: "Traduction qui se chante : même nombre de syllabes par ligne, accents sur les temps forts, plusieurs variantes au choix.", color: "from-violet to-magenta" },
   { n: "03", title: "Chanter et protéger", text: "La voix de l'artiste interprète la nouvelle version sur l'instrumentale d'origine, signée par un filigrane AudioSeal.", color: "from-magenta to-orange" },
 ];

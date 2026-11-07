@@ -8,8 +8,8 @@ from pydantic import BaseModel, Field
 StepName = Literal["separate", "transcribe", "align", "translate", "sing", "finalize"]
 STEP_NAMES: tuple[str, ...] = ("separate", "transcribe", "align", "translate", "sing", "finalize")
 StepStatus = Literal["pending", "running", "done", "error"]
-SourceLang = Literal["fon", "yor", "fra", "eng"]
-TargetLang = Literal["eng", "fra", "fon"]
+SourceLang = Literal["fon", "yor", "swh", "fra", "eng"]
+TargetLang = Literal["eng", "fra", "fon", "yor", "swh"]
 FILE_KEYS: tuple[str, ...] = ("original", "vocals", "instrumental", "guide", "sung", "final")
 
 

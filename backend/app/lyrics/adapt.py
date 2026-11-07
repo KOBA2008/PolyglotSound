@@ -16,7 +16,7 @@ log = logging.getLogger("polyglotsound.lyrics")
 
 MAX_ROUNDS = 4
 
-LANG_NAMES = {"eng": "English", "fra": "French", "fon": "Fon (Fɔngbe, Benin)", "yor": "Yoruba"}
+LANG_NAMES = {"eng": "English", "fra": "French", "fon": "Fon (Fɔngbe, Benin)", "yor": "Yoruba", "swh": "Swahili (Kiswahili)"}
 
 SYSTEM_PROMPT = """You are an expert lyricist specialised in SINGABLE song translation (like adapting a musical or a pop song into another language).
 You receive the meaning of one sung line, the original line, and a rhythmic grid. You write new lyrics in the target language.
@@ -78,6 +78,7 @@ _FILLERS = {
     "fra": [["oh"], ["toi"], ["mon", "cœur"], ["là"], ["la"]],
     "fon": [["o"], ["a"], ["la"], ["ɛ"]],
     "yor": [["o"], ["a"], ["la"], ["ẹ"]],
+    "swh": [["o"], ["a"], ["la"], ["ee"]],
 }
 
 

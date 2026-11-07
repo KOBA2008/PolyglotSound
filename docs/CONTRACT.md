@@ -36,7 +36,7 @@ Variables d'environnement backend :
   "id": "a1b2c3",
   "title": "Refrain démo",
   "artist": "Nom de l'artiste",
-  "source_lang": "fon",          // fon | yor | fra | eng
+  "source_lang": "fon",          // fon | yor | swh | fra | eng
   "target_lang": "eng",          // eng | fra | fon
   "consent": true,               // l'artiste certifie être le titulaire de la voix
   "created_at": "2026-11-06T10:00:00Z",
@@ -107,7 +107,7 @@ Erreurs : HTTP 4xx/5xx avec `{detail: "message en français"}`.
 ```python
 from app.lyrics import count_syllables, split_syllables, adapt_line, llm_info
 
-count_syllables(text: str, lang: str) -> int            # lang: fon|yor|fra|eng
+count_syllables(text: str, lang: str) -> int            # lang: fon|yor|swh|fra|eng
 split_syllables(text: str, lang: str) -> list[str]
 async def adapt_line(meaning: str, target_lang: str, n_syllables: int,
                      stress_positions: list[int] | None = None, source_text: str = "",
@@ -126,11 +126,11 @@ Toutes les routes renvoient `{detail}` en cas d'erreur. Auth optionnelle : heade
 |---|---|---|
 | GET /health | | `{ok, device, models_loaded:[...]}` |
 | POST /separate | file | `{vocals_b64, instrumental_b64, sr}` (Demucs htdemucs) |
-| POST /transcribe | file (voix), form `lang` (fon\|yor\|fra\|eng) | `{segments:[{text,start,end}]}` (MMS-1b-all + découpe silences) |
+| POST /transcribe | file (voix), form `lang` (fon\|yor\|swh\|fra\|eng) | `{segments:[{text,start,end}]}` (MMS-1b-all + découpe silences) |
 | POST /align | file (voix), form `lines` (JSON `[{text,start,end}]`), form `lang` | `{lines:[{words:[{text,start,end}]}]}` (torchaudio MMS_FA + uroman) |
 | POST /analyze | file (voix) | `{hop, f0:[...], onsets:[...], energy:[...]}` (RMVPE ou torchcrepe/pyin) |
-| POST /translate | JSON `{texts:[str], src, tgt}` | `{texts:[str]}` (NLLB-200 distilled 600M, codes fon_Latn yor_Latn fra_Latn eng_Latn) |
-| POST /tts | JSON `{text, lang}` | `{audio_b64, sr}` (MMS-TTS facebook/mms-tts-{eng,fra,fon,yor}) |
+| POST /translate | JSON `{texts:[str], src, tgt}` | `{texts:[str]}` (NLLB-200 distilled 600M, codes fon_Latn yor_Latn swh_Latn fra_Latn eng_Latn) |
+| POST /tts | JSON `{text, lang}` | `{audio_b64, sr}` (MMS-TTS facebook/mms-tts-{eng,fra,fon,yor,swh}) |
 | POST /sing_auto | file `reference` (voix artiste), form `plan` JSON `{lang, lines:[{text, start, end, syllables:[{start,end}]}], hop, f0:[...], total_duration}` | `{audio_b64, sr}` : TTS par ligne, étirement aux durées, f0 imposé (pyworld), puis Seed-VC |
 | POST /convert | file `source` (voix guide), file `reference` (voix artiste) | `{audio_b64, sr}` (Seed-VC mode chant, f0 conditionné) |
 | POST /watermark/embed | file, form `message` (str court) | `{audio_b64, sr}` (AudioSeal 16 bits) |

@@ -19,7 +19,7 @@ from app.models import Line, Pitch, Project, Syllable, Variant
 
 log = logging.getLogger("polyglotsound.pipeline")
 
-NLLB = {"fon": "fon_Latn", "yor": "yor_Latn", "fra": "fra_Latn", "eng": "eng_Latn"}
+NLLB = {"fon": "fon_Latn", "yor": "yor_Latn", "swh": "swh_Latn", "fra": "fra_Latn", "eng": "eng_Latn"}
 ENERGY_HOP = 0.01
 _tasks: set[asyncio.Task[Any]] = set()
 

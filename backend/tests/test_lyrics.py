@@ -83,7 +83,28 @@ def test_yoruba_tones_and_syllabic_n():
     assert split_syllables(with_tones, "yor")[:2] == ["ọ", "mọ"]  # les tons sont conservés
 
 
-@pytest.mark.parametrize("lang", ["fon", "yor", "fra", "eng"])
+@pytest.mark.parametrize("word,expected", [
+    ("nakupenda", ["na", "ku", "pe", "nda"]),
+    ("mtoto", ["m", "to", "to"]),
+    ("kumpenda", ["ku", "m", "pe", "nda"]),
+    ("mwana", ["mwa", "na"]),
+    ("mbuzi", ["mbu", "zi"]),
+    ("nchi", ["n", "chi"]),
+    ("ndoto", ["ndo", "to"]),
+    ("asante", ["a", "sa", "nte"]),
+    ("kuimba", ["ku", "i", "mba"]),
+    ("nyumba", ["nyu", "mba"]),
+])
+def test_swahili_split(word, expected):
+    assert split_syllables(word, "swh") == expected
+
+
+def test_swahili_line_and_aliases():
+    assert count_syllables("Ninakupenda sana, mpenzi wangu", "swh") == 12
+    assert count_syllables("asante", "sw") == count_syllables("asante", "swahili") == 3
+
+
+@pytest.mark.parametrize("lang", ["fon", "yor", "swh", "fra", "eng"])
 def test_count_equals_len_split(lang):
     phrases = [
         "Mama, you carried me through rain",
@@ -124,7 +145,7 @@ def rule_provider(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "rule")
 
 
-@pytest.mark.parametrize("lang,n,k", [("eng", 8, 3), ("fra", 6, 2), ("fon", 5, 4), ("yor", 3, 1)])
+@pytest.mark.parametrize("lang,n,k", [("eng", 8, 3), ("fra", 6, 2), ("fon", 5, 4), ("yor", 3, 1), ("swh", 6, 3)])
 def test_adapt_line_rule(rule_provider, lang, n, k):
     assert llm_info()["provider"] == "rule"
     res = asyncio.run(adapt_line("Maman, tu m'as portée sous la pluie", lang, n, [2, 5], n_variants=k))

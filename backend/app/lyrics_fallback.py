@@ -46,7 +46,8 @@ def count_syllables(text: str, lang: str = "fon") -> int:
 
 
 _FILLERS = {"eng": ["oh", "yeah", "my", "love"], "fra": ["oh", "mon", "doux", "cœur"],
-            "fon": ["o", "ɛ", "mɛ", "ji"]}
+            "fon": ["o", "ɛ", "mɛ", "ji"],
+            "yor": ["o", "ẹ", "a", "la"], "swh": ["o", "a", "la", "ee"]}
 
 
 async def adapt_line(meaning: str, target_lang: str, n_syllables: int,

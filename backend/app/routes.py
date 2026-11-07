@@ -22,8 +22,8 @@ api = APIRouter(prefix="/api")
 files_router = APIRouter()
 
 MAX_UPLOAD = 100 * 1024 * 1024  # 100 Mo
-SOURCE_LANGS = {"fon", "yor", "fra", "eng"}
-TARGET_LANGS = {"eng", "fra", "fon"}
+SOURCE_LANGS = {"fon", "yor", "swh", "fra", "eng"}
+TARGET_LANGS = {"eng", "fra", "fon", "yor", "swh"}
 AUDIO_TYPES = {".wav": "audio/wav", ".mp3": "audio/mpeg"}
 
 
@@ -83,9 +83,9 @@ async def create_project(file: UploadFile = File(...), title: str = Form(""), ar
     if consent.strip().lower() != "true":
         raise HTTPException(400, "Consentement requis : l'artiste doit certifier être le titulaire de la voix.")
     if source_lang not in SOURCE_LANGS:
-        raise HTTPException(400, "Langue source inconnue (fon, yor, fra ou eng).")
+        raise HTTPException(400, "Langue source inconnue (fon, yor, swh, fra ou eng).")
     if target_lang not in TARGET_LANGS:
-        raise HTTPException(400, "Langue cible inconnue (eng, fra ou fon).")
+        raise HTTPException(400, "Langue cible inconnue (eng, fra, fon, yor ou swh).")
     pid = store.new_id()
     d = store.project_dir(pid)
     d.mkdir(parents=True)
