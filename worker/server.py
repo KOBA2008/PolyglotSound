@@ -1445,7 +1445,7 @@ def warmup(models: str = Form("all")):
 
     with GPU_LOCK:
         step("separate", lambda: separate_array(np.stack([voice, voice]), 16000))
-        step("transcribe", lambda: (_asr_for("fon"), _asr_for("eng")))
+        step("transcribe", lambda: [_asr_for(l) for l in ("fon", "yor", "swh", "eng")])
         step("align", lambda: align_line(voice, "hello world", 0.2, 2.8, "eng", REG.get("mms_fa", _load_mms_fa)))
         step("analyze", lambda: analyze_array(voice, 16000))
         step("translate", lambda: translate_texts(["Bonjour"], "fra", "eng"))

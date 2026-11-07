@@ -125,7 +125,7 @@ def main() -> int:
     ap.add_argument("url", help="URL du worker, ex. https://xxxx.trycloudflare.com ou http://localhost:9000")
     ap.add_argument("--audio", help="morceau à tester (sinon son synthétique)")
     ap.add_argument("--reference", help="voix de référence de l'artiste pour Seed-VC (sinon voix séparée)")
-    ap.add_argument("--lang", default="fon", help="langue source (fon|yor|fra|eng)")
+    ap.add_argument("--lang", default="fon", help="langue source (fon|yor|swh|fra|eng)")
     ap.add_argument("--target", default="eng", help="langue cible (eng|fra|fon)")
     ap.add_argument("--token", default=os.environ.get("WORKER_TOKEN"), help="X-Worker-Token")
     ap.add_argument("--only", help="liste de routes séparées par des virgules : " + ",".join(ROUTES))
