@@ -333,12 +333,26 @@ def _chosen_text(l: Line) -> str:
     return l.variants[0].text if l.variants else ""
 
 
+def _fit_spans(spans: list[tuple[float, float]], n: int) -> list[tuple[float, float]]:
+    """Ramène une liste de notes (début, fin) à n notes en conservant les attaques d'origine."""
+    sp = [list(x) for x in sorted(spans) if x[1] > x[0]] or [[0.0, 0.1]]
+    while len(sp) < n:  # divise la note la plus longue en deux
+        i = max(range(len(sp)), key=lambda k: sp[k][1] - sp[k][0])
+        a, b = sp[i]; m = (a + b) / 2
+        sp[i:i + 1] = [[a, m], [m, b]]
+    while len(sp) > n:  # fusionne la paire voisine la plus courte
+        i = min(range(len(sp) - 1), key=lambda k: sp[k + 1][1] - sp[k][0])
+        sp[i:i + 2] = [[sp[i][0], sp[i + 1][1]]]
+    return [(a, b) for a, b in sp]
+
+
 async def step_sing(pid: str, body: dict[str, Any]) -> str:
     p = store.load(pid)
     mode = body.get("mode") or "studio"
     if mode not in ("studio", "auto"):
         raise StepError("Mode de chant inconnu : utilisez studio ou auto.")
-    reference = _vocals_or_original(p)
+    custom = _path(pid, "voice_ref.wav")  # voix choisie pour l'IA (POST /projects/{id}/voice)
+    reference = custom if custom.exists() else _vocals_or_original(p)
     sung = _path(pid, "sung.wav")
     live = await _use_worker(pid)
 
@@ -368,6 +382,10 @@ async def step_sing(pid: str, body: dict[str, Any]) -> str:
             n_target = count_syllables(text, p.target_lang)
             if l.syllables and len(l.syllables) == n_target:
                 spans = [{"start": s.start, "end": s.end} for s in l.syllables]
+            elif l.syllables:
+                # garde le squelette rythmique d'origine : divise les notes longues / fusionne les courtes
+                spans = [{"start": a, "end": b} for a, b in
+                         _fit_spans([(s.start, s.end) for s in l.syllables], max(1, n_target))]
             else:
                 spans = [{"start": s, "end": e}
                          for _, s, e in _uniform_syllables(["x"] * max(1, n_target), l.start, l.end)]
@@ -378,7 +396,7 @@ async def step_sing(pid: str, body: dict[str, Any]) -> str:
         _set_step(pid, "sing", progress=20, message="Synthèse chantée + Seed-VC sur le worker GPU...")
         data = await worker.sing_auto(reference, plan)
         await asyncio.to_thread(audio.write_wav_bytes, data, sung, 1)
-        msg = "Voix chantée générée automatiquement avec le timbre de l'artiste."
+        msg = ("Voix chantée générée automatiquement avec " + ("la voix choisie pour l'IA." if custom.exists() else "le timbre de l'artiste."))
 
     store.update(pid, lambda pr: _set_file(pr, "sung", "sung.wav"))
     return msg

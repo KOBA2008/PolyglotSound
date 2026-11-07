@@ -176,6 +176,14 @@ async def upload_guide(pid: str, file: UploadFile = File(...)) -> Project:
     return store.update(pid, lambda p: setattr(p.files, "guide", store.file_url(pid, "guide.wav")))
 
 
+@api.post("/projects/{pid}/voice", response_model=Project)
+async def upload_voice(pid: str, file: UploadFile = File(...)) -> Project:
+    """Voix de l'IA : timbre de référence pour le chant (consentement requis), à la place de la voix d'origine."""
+    _load(pid)
+    await _import_audio(file, store.file_path(pid, "voice_ref.wav"), channels=1)
+    return store.load(pid)
+
+
 # ---------------------------------------------------------------- outils
 
 @api.post("/adapt")
