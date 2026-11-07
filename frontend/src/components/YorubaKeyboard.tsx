@@ -1,0 +1,27 @@
+const CHARS = ["ẹ", "ọ", "ṣ", "à", "á", "è", "é", "ì", "í", "ò", "ó", "ù", "ú", "ẹ̀", "ẹ́", "ọ̀", "ọ́", "ń"];
+
+/** Clavier de caractères yorùbá : insère au curseur sans voler le focus du champ. */
+export default function YorubaKeyboard({ onInsert, label = "Clavier yorùbá" }: { onInsert: (ch: string) => void; label?: string }) {
+  return (
+    <div className="neo-inset mt-2 rounded-xl p-2.5">
+      <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</span>
+        <span className="text-[11px] text-muted/80">insère au curseur</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label={label}>
+        {CHARS.map((ch) => (
+          <button
+            key={ch}
+            type="button"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onInsert(ch)}
+            aria-label={`Insérer ${ch}`}
+            className="flex h-10 min-w-10 items-center justify-center rounded-lg border border-white/5 bg-gradient-to-br from-surface-2 to-surface px-1 text-[15px] font-semibold text-ink shadow-[3px_3px_8px_rgba(1,4,10,.6),-2px_-2px_6px_rgba(58,76,108,.15)] transition hover:text-brand-soft hover:ring-1 hover:ring-brand/40 active:shadow-[inset_2px_2px_5px_rgba(1,4,10,.7)]"
+          >
+            {ch}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

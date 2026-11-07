@@ -159,10 +159,10 @@ export default function Studio() {
                     disabled={disabled}
                     onClick={() => goTo(i)}
                     aria-current={current ? "step" : undefined}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "bg-white/12 ring-1 ring-magenta/60" : "hover:bg-white/6"}`}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "bg-brand/10 ring-1 ring-brand/40" : "hover:bg-white/6"}`}
                   >
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                      st === "done" ? "bg-lime text-night" : st === "running" ? "bg-cyan/30 text-cyan-100" : st === "error" ? "bg-red-500/70 text-white" : current ? "grad text-white" : "bg-white/10 text-muted"}`}>
+                      st === "done" ? "bg-mint text-night" : st === "running" ? "bg-teal/30 text-teal" : st === "error" ? "bg-red-500/70 text-white" : current ? "grad" : "bg-white/10 text-muted"}`}>
                       {st === "done" ? <IconCheck size={15} /> : st === "running" ? <IconLoader size={15} /> : st === "error" ? "!" : i + 1}
                     </span>
                     <span className="min-w-0">
@@ -176,7 +176,7 @@ export default function Studio() {
           </ol>
           {project && (
             <div className="mt-4 hidden border-t border-white/10 pt-4 lg:block">
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="neo-well h-1.5 overflow-hidden">
                 <div className="grad h-full rounded-full transition-all" style={{ width: `${(STEP_ORDER.filter((s) => project.steps?.[s]?.status === "done").length / STEP_ORDER.length) * 100}%` }} />
               </div>
             </div>

@@ -16,22 +16,22 @@ export function fmtTime(t: number): string {
 interface Props {
   src: string | null | undefined;
   label: string;
-  accent?: "violet" | "magenta" | "cyan" | "orange" | "lime";
+  accent?: "brand" | "gold" | "teal" | "flame" | "mint";
   download?: boolean;
   ref?: Ref<AudioPlayerHandle>;
   onTime?: (t: number) => void;
 }
 
 const ACCENTS: Record<string, string> = {
-  violet: "from-violet to-violet-soft",
-  magenta: "from-violet to-magenta",
-  cyan: "from-cyan to-lime",
-  orange: "from-magenta to-orange",
-  lime: "from-lime to-cyan",
+  brand: "from-brand to-brand-soft",
+  gold: "from-brand to-gold",
+  teal: "from-teal to-mint",
+  flame: "from-gold to-flame",
+  mint: "from-mint to-teal",
 };
 
 /** Lecteur audio stylé, sans dépendance. */
-export default function AudioPlayer({ src, label, accent = "magenta", download, ref, onTime }: Props) {
+export default function AudioPlayer({ src, label, accent = "gold", download, ref, onTime }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const stopAt = useRef<number | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -55,7 +55,7 @@ export default function AudioPlayer({ src, label, accent = "magenta", download, 
   if (!src) {
     return (
       <div className="glass flex items-center gap-3 p-3 opacity-60">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10"><IconPlay size={16} /></div>
+        <div className="neo-inset flex h-10 w-10 items-center justify-center rounded-full"><IconPlay size={16} /></div>
         <div>
           <div className="text-sm font-semibold">{label}</div>
           <div className="text-xs text-muted">Pas encore disponible</div>
@@ -99,7 +99,7 @@ export default function AudioPlayer({ src, label, accent = "magenta", download, 
           type="button"
           onClick={toggle}
           aria-label={playing ? `Pause : ${label}` : `Lire : ${label}`}
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${ACCENTS[accent]} text-white shadow-lg transition hover:scale-105`}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${ACCENTS[accent]} text-night shadow-lg transition hover:scale-105`}
         >
           {playing ? <IconPause size={16} /> : <IconPlay size={16} />}
         </button>
@@ -120,7 +120,7 @@ export default function AudioPlayer({ src, label, accent = "magenta", download, 
               if (a) a.currentTime = Number(e.target.value);
             }}
             className="mt-1 h-1.5 w-full cursor-pointer"
-            style={{ background: `linear-gradient(90deg, #d6249f ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
+            style={{ background: `linear-gradient(90deg, #00d084 ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
           />
           {err && <div className="mt-1 text-xs text-red-300">Fichier audio illisible ou introuvable.</div>}
         </div>

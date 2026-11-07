@@ -1,10 +1,13 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { api, errMsg } from "../api";
 import type { TargetLang, Variant } from "../types";
 import { TARGET_LANGS } from "../types";
 import SyllableGrid, { uniformCells } from "../components/SyllableGrid";
 import VariantCard from "../components/VariantCard";
 import Wave from "../components/Wave";
+import YorubaKeyboard from "../components/YorubaKeyboard";
+import { insertAtCursor } from "../components/insertAtCursor";
+import { useSyllables } from "../components/useSyllables";
 import { IconLoader, IconSparkle } from "../components/icons";
 
 const EXAMPLES = [
@@ -23,12 +26,15 @@ export default function Atelier() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
+  const origRef = useRef<HTMLInputElement>(null);
+  const yor = useSyllables(text, "yor", 300);
 
   const setCount = (v: number) => {
     setN(v);
     setStress((s) => s.filter((i) => i < v));
   };
   const toggle = (i: number) => setStress((s) => (s.includes(i) ? s.filter((x) => x !== i) : [...s, i].sort((a, b) => a - b)));
+  const insertYoruba = (ch: string) => insertAtCursor(origRef.current, ch, text, setText);
 
   const submit = async (e?: FormEvent) => {
     e?.preventDefault();
@@ -47,14 +53,19 @@ export default function Atelier() {
   };
 
   const ref = uniformCells(n, stress);
+  const yorCount = yor.count ?? 0;
 
   return (
     <div className="space-y-8 pt-4">
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className="kicker">Démo live</p>
+          <p className="kicker">Démo live · Yorùbá en priorité</p>
           <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">Proposez une <span className="grad-text">phrase</span></h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure.</p>
+          <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure. La phrase originale s'écrit en <strong className="font-semibold text-gold">yorùbá</strong>.</p>
+          <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">
+            <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold">Yorùbá en priorité</span>
+            Déjà pris en charge : Fon, Swahili
+          </p>
         </div>
         <Wave bars={24} height={56} />
       </header>
@@ -66,8 +77,19 @@ export default function Atelier() {
             <textarea id="meaning" rows={3} className="field text-lg" value={meaning} onChange={(e) => setMeaning(e.target.value)} placeholder="Ex. L'amour est une rivière qui ne tarit jamais" required />
           </div>
           <div>
-            <label htmlFor="orig" className="label">Phrase originale (facultatif, en fon, yorùbá ou swahili)</label>
-            <input id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
+            <label htmlFor="orig" className="label">Phrase originale (facultatif, en yorùbá en priorité)</label>
+            <input ref={origRef} id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
+            <YorubaKeyboard onInsert={insertYoruba} label="Clavier yorùbá de la phrase originale" />
+            <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
+              <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 font-mono text-xs font-bold text-gold">
+                {yor.loading && yor.count === null ? "…" : yor.error ? "?" : yorCount} syllabe{yorCount > 1 ? "s" : ""}
+              </span>
+              <span className="text-[11px] text-muted">{yor.loading ? "comptage en cours" : "en yorùbá · mise à jour 300 ms"}</span>
+              {yor.split.map((s, i) => (
+                <span key={i} className="rounded-md bg-white/[.06] px-1.5 py-0.5 text-xs text-muted">{s}</span>
+              ))}
+              {yor.error && <span className="text-xs text-flame-soft">compteur indisponible</span>}
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <span className="self-center text-xs text-muted">Exemples :</span>
@@ -82,17 +104,17 @@ export default function Atelier() {
           <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
             <div>
               <span className="label" id="lang-l">Langue cible</span>
-              <div className="inline-flex rounded-full border border-white/15 bg-black/30 p-1" role="radiogroup" aria-labelledby="lang-l">
+              <div className="inline-flex rounded-full neo-inset p-1" role="radiogroup" aria-labelledby="lang-l">
                 {TARGET_LANGS.map((l) => (
                   <button key={l.code} type="button" role="radio" aria-checked={lang === l.code} onClick={() => setLang(l.code)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${lang === l.code ? "grad text-white" : "text-muted hover:text-white"}`}>
+                    className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${lang === l.code ? "grad" : "text-muted hover:text-ink"}`}>
                     {l.label}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label htmlFor="n" className="label">Nombre de syllabes : <span className="font-display text-base text-white">{n}</span></label>
+              <label htmlFor="n" className="label">Nombre de syllabes : <span className="font-display text-base text-ink">{n}</span></label>
               <input id="n" type="range" min={4} max={16} value={n} onChange={(e) => setCount(Number(e.target.value))} className="w-full" />
             </div>
           </div>

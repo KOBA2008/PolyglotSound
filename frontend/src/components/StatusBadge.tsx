@@ -3,8 +3,8 @@ import { IconAlert, IconCheck, IconLoader } from "./icons";
 
 const STYLES: Record<StepStatus, { label: string; cls: string }> = {
   pending: { label: "En attente", cls: "bg-white/8 text-muted border-white/15" },
-  running: { label: "En cours", cls: "bg-cyan/15 text-cyan-200 border-cyan/40" },
-  done: { label: "Terminé", cls: "bg-lime/15 text-lime border-lime/40" },
+  running: { label: "En cours", cls: "bg-teal/15 text-teal border-teal/40" },
+  done: { label: "Terminé", cls: "bg-mint/15 text-mint border-mint/40" },
   error: { label: "Erreur", cls: "bg-red-500/15 text-red-300 border-red-400/40" },
 };
 
@@ -28,10 +28,10 @@ export function ModeBadge({ mode, provider, model, compact }: { mode?: string; p
   const live = mode === "live";
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${live ? "border-lime/50 bg-lime/10 text-lime" : "border-orange/50 bg-orange/10 text-orange-300"}`}
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${live ? "border-mint/50 bg-mint/10 text-mint" : "border-gold/50 bg-gold/10 text-gold"}`}
       title={live ? "Worker GPU connecté" : "Worker GPU absent : solutions de repli légères"}
     >
-      <span className={`h-2 w-2 rounded-full ${live ? "bg-lime" : "bg-orange"}`} />
+      <span className={`h-2 w-2 rounded-full ${live ? "bg-mint" : "bg-gold"}`} />
       {live ? "Mode live" : "Mode démo"}
       {!compact && provider && <span className="font-normal text-muted">· LLM {provider}{model ? ` (${model})` : ""}</span>}
     </span>

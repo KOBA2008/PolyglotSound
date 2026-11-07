@@ -6,12 +6,18 @@ import type { Project } from "../types";
 import { STEP_ORDER, langLabel } from "../types";
 import Wave from "../components/Wave";
 import { ModeBadge } from "../components/StatusBadge";
-import { IconArrowRight, IconMusic, IconTrash } from "../components/icons";
+import { IconArrowRight, IconCheck, IconMusic, IconPlay, IconShield, IconTrash } from "../components/icons";
 
 const TEMPS = [
-  { n: "01", title: "Comprendre", text: "Séparation de la voix et de l'instrumentale, transcription du fon, du yorùbá ou du swahili, sens en français. L'artiste corrige chaque ligne.", color: "from-violet to-cyan" },
-  { n: "02", title: "Adapter", text: "Traduction qui se chante : même nombre de syllabes par ligne, accents sur les temps forts, plusieurs variantes au choix.", color: "from-violet to-magenta" },
-  { n: "03", title: "Chanter et protéger", text: "La voix de l'artiste interprète la nouvelle version sur l'instrumentale d'origine, signée par un filigrane AudioSeal.", color: "from-magenta to-orange" },
+  { n: "01", title: "Comprendre", text: "Séparation de la voix et de l'instrumentale, transcription du yorùbá, du fon ou du swahili, sens en français. L'artiste corrige chaque ligne.", color: "from-brand to-teal", tag: "Yorùbá en priorité" },
+  { n: "02", title: "Adapter", text: "Traduction qui se chante : même nombre de syllabes par ligne, accents sur les temps forts, plusieurs variantes au choix.", color: "from-brand to-gold", tag: "Syllabes et accents" },
+  { n: "03", title: "Chanter et protéger", text: "La voix de l'artiste interprète la nouvelle version sur l'instrumentale d'origine, signée par un filigrane AudioSeal.", color: "from-gold to-flame", tag: "Voix et filigrane" },
+];
+
+const MOCK_TRACKS = [
+  { label: "Voix isolée", time: "0:24", bar: "bg-brand", width: "68%" },
+  { label: "Instrumentale", time: "0:24", bar: "bg-gold", width: "86%" },
+  { label: "Version anglaise", time: "0:24", bar: "bg-flame", width: "52%" },
 ];
 
 function progressOf(p: Project) {
@@ -42,14 +48,17 @@ export default function Home() {
 
   return (
     <div className="space-y-16">
-      <section className="relative grid items-center gap-10 pt-6 md:pt-14 lg:grid-cols-[1.25fr_1fr]">
+      <section className="relative grid items-center gap-10 pt-6 md:pt-14 lg:grid-cols-[1.2fr_1fr]">
         <div>
           <p className="kicker">Hackathon IA &amp; Musique 2026 · SIMA × Epitech Bénin</p>
           <h1 className="mt-4 font-display text-5xl font-extrabold leading-[0.95] tracking-tight md:text-7xl xl:text-8xl">
             Polyglot<span className="grad-text">Sound</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-xl leading-relaxed text-[#f3e8ff] md:text-2xl">
+          <p className="mt-6 max-w-2xl text-xl leading-relaxed text-ink md:text-2xl">
             Transcende les langues, conserve l'âme : la musique béninoise et africaine sans frontières.
+          </p>
+          <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted">
+            Une chanson en <strong className="font-semibold text-gold">yorùbá</strong>, chantée en anglais ou en français, avec la voix de son artiste et sur l'instrumentale d'origine.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link to="/projet/nouveau" className="btn btn-primary px-6 py-3 text-base">
@@ -60,33 +69,90 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap items-center gap-2 text-sm">
             <ModeBadge mode={health?.mode} provider={health?.llm?.provider} model={health?.llm?.model} />
             {health && (
-              <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-muted">
+              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-xs text-muted">
                 Worker GPU : {health.worker ? "connecté" : "absent"}
               </span>
             )}
           </div>
-        </div>
-        <div className="glass relative overflow-hidden p-6 md:p-8">
-          <div className="mb-4 flex flex-wrap gap-2 text-xs">
-            {["Fon", "Yorùbá", "Français", "Anglais"].map((l) => (
-              <span key={l} className="rounded-full border border-white/20 bg-white/5 px-3 py-1">{l}</span>
-            ))}
-          </div>
-          <Wave bars={36} height={90} className="justify-between" />
-          <p className="mt-5 font-display text-lg font-bold leading-snug">
-            Une chanson en fon, chantée en anglais par la voix de son artiste, sur le même groove.
+          <p className="mt-5 flex flex-wrap items-center gap-2 text-sm text-muted">
+            Déjà pris en charge :
+            <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold">Yorùbá en priorité</span>
+            <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-xs font-semibold text-ink">Fon</span>
+            <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-xs font-semibold text-ink">Swahili</span>
           </p>
-          <p className="mt-2 text-sm text-muted">L'artiste valide chaque étape et chaque version est signée numériquement.</p>
+        </div>
+
+        <div className="glass relative overflow-hidden p-6 md:p-7">
+          <svg className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 opacity-30" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(0,208,132,.5)" strokeWidth="1" />
+            <circle cx="100" cy="100" r="54" fill="none" stroke="rgba(255,215,0,.45)" strokeWidth="1" />
+            <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(255,59,48,.45)" strokeWidth="1" />
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((d) => {
+              const a = (d * Math.PI) / 180;
+              return <circle key={d} cx={100 + 78 * Math.cos(a)} cy={100 + 78 * Math.sin(a)} r="2.4" fill={d % 90 === 0 ? "#ffd700" : "#00d084"} />;
+            })}
+          </svg>
+          <div className="relative">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Aperçu du studio</p>
+                <p className="mt-1 font-display text-xl font-extrabold">Yorùbá <span className="text-muted">→</span> Anglais</p>
+              </div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-soft">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-brand shadow-[0_0_10px_#00d084]" aria-hidden="true" /> En direct
+              </span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-1.5 text-xs">
+              <span className="rounded-full border border-gold/50 bg-gold/10 px-3 py-1 font-semibold text-gold">Yorùbá</span>
+              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1">Fon</span>
+              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1">Swahili</span>
+              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-muted">Français</span>
+              <span className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 text-muted">Anglais</span>
+            </div>
+            <div className="neo-inset mt-5 rounded-2xl p-4">
+              <Wave bars={36} height={90} className="justify-between" />
+              <div className="mt-5 space-y-2" aria-hidden="true">
+                {MOCK_TRACKS.map((t) => (
+                  <div key={t.label} className="flex items-center gap-2.5 rounded-xl border border-white/5 bg-white/[.02] px-2.5 py-2">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[.05] text-ink">
+                      <IconPlay size={10} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="truncate text-xs font-semibold">{t.label}</span>
+                        <span className="shrink-0 font-mono text-[10px] text-muted">{t.time}</span>
+                      </div>
+                      <div className="neo-well mt-1.5 h-1.5 w-full">
+                        <div className={`h-full rounded-full ${t.bar}`} style={{ width: t.width }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="mt-4 font-display text-base font-bold leading-snug">
+              La même chanson, un autre monde. La voix reste celle de l'artiste.
+            </p>
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+              <IconShield size={13} className="text-brand" /> Chaque version est signée par un filigrane AudioSeal.
+            </p>
+          </div>
         </div>
       </section>
 
       <section aria-labelledby="temps">
-        <h2 id="temps" className="font-display text-3xl font-extrabold tracking-tight">En trois temps</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="temps" className="font-display text-3xl font-extrabold tracking-tight">En trois temps</h2>
+          <p className="text-sm text-muted">Un parcours guidé, validé par l'artiste à chaque étape.</p>
+        </div>
         <div className="mt-6 grid gap-5 md:grid-cols-3">
           {TEMPS.map((t) => (
-            <div key={t.n} className="glass p-6">
-              <span className={`font-display text-4xl font-extrabold bg-gradient-to-r ${t.color} bg-clip-text text-transparent`}>{t.n}</span>
-              <h3 className="mt-2 font-display text-xl font-extrabold">{t.title}</h3>
+            <div key={t.n} className="glass group p-6 transition duration-200 hover:-translate-y-1">
+              <div className="flex items-start justify-between gap-3">
+                <span className={`bg-gradient-to-r ${t.color} bg-clip-text font-display text-4xl font-extrabold text-transparent`}>{t.n}</span>
+                <span className="rounded-full border border-white/10 bg-white/[.03] px-2.5 py-0.5 text-[11px] font-semibold text-muted">{t.tag}</span>
+              </div>
+              <h3 className="mt-3 font-display text-xl font-extrabold">{t.title}</h3>
               <p className="mt-2 text-muted">{t.text}</p>
             </div>
           ))}
@@ -95,38 +161,80 @@ export default function Home() {
 
       <section aria-labelledby="projets">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="projets" className="font-display text-3xl font-extrabold tracking-tight">Projets</h2>
+          <div className="flex flex-wrap items-baseline gap-3">
+            <h2 id="projets" className="font-display text-3xl font-extrabold tracking-tight">Projets</h2>
+            {projects && <span className="text-sm text-muted">{projects.length} projet{projects.length > 1 ? "s" : ""}</span>}
+          </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => void load()}>Actualiser</button>
         </div>
         {error && <p role="alert" className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</p>}
+        {projects === null && !error && (
+          <>
+            <p className="sr-only" role="status">Chargement des projets...</p>
+            <ul className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-hidden="true">
+              {[0, 1, 2].map((i) => (
+                <li key={i} className="glass p-5">
+                  <div className="neo-inset h-10 w-10 rounded-xl" />
+                  <div className="neo-inset mt-4 h-4 w-1/2 rounded-md" />
+                  <div className="neo-inset mt-2 h-3 w-2/3 rounded-md" />
+                  <div className="neo-well mt-5 h-1.5 w-full" />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
         {projects && projects.length === 0 && (
-          <div className="glass mt-6 p-8 text-center text-muted">
-            Aucun projet pour l'instant. <Link to="/projet/nouveau" className="font-semibold text-pink-300 underline">Déposez un premier refrain</Link>.
+          <div className="glass mt-6 flex flex-col items-center gap-3 p-10 text-center">
+            <span className="grad flex h-12 w-12 items-center justify-center rounded-2xl"><IconMusic size={22} /></span>
+            <p className="font-display text-lg font-extrabold">Aucun projet pour l'instant</p>
+            <p className="max-w-md text-muted">Déposez un premier refrain, en yorùbá de préférence, pour lancer la démonstration.</p>
+            <Link to="/projet/nouveau" className="btn btn-primary mt-1 px-5">Démarrer une adaptation</Link>
           </div>
         )}
-        {projects === null && !error && <p className="mt-6 text-muted">Chargement...</p>}
         <ul className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {projects?.map((p) => {
             const { done, total } = progressOf(p);
+            const finished = !!p.files?.final;
             return (
-              <li key={p.id} className="glass group relative p-5 transition hover:bg-white/8">
+              <li key={p.id} className="glass group relative p-5 transition duration-200 hover:-translate-y-0.5">
                 <Link to={`/projet/${p.id}`} className="block after:absolute after:inset-0 after:content-['']">
                   <div className="flex items-start gap-3">
                     <span className="grad flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"><IconMusic size={18} /></span>
-                    <div className="min-w-0">
-                      <div className="truncate font-display text-lg font-bold">{p.title || "Sans titre"}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="truncate font-display text-lg font-bold">{p.title || "Sans titre"}</div>
+                        {finished && (
+                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-brand/50 bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-soft">
+                            <IconCheck size={10} /> Terminé
+                          </span>
+                        )}
+                      </div>
                       <div className="truncate text-sm text-muted">{p.artist} · {langLabel(p.source_lang)} → {langLabel(p.target_lang)}</div>
                     </div>
                   </div>
                 </Link>
                 <div className="mt-4 flex items-center gap-3">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
-                    <div className="grad h-full rounded-full" style={{ width: `${(done / total) * 100}%` }} />
+                  <div className="neo-well h-1.5 flex-1 overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-brand to-gold" style={{ width: `${(done / total) * 100}%` }} />
                   </div>
                   <span className="text-xs text-muted">{done}/{total} étapes</span>
-                  <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted hover:bg-red-500/20 hover:text-red-300" aria-label={`Supprimer ${p.title}`}>
-                    <IconTrash size={15} />
-                  </button>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs text-muted">{finished ? "Version finale signée" : "En cours d'adaptation"}</span>
+                  <div className="flex items-center gap-1.5">
+                    {finished && (
+                      <Link
+                        to={`/projet/${p.id}?etape=6`}
+                        className="btn btn-ghost btn-sm relative z-10 whitespace-nowrap"
+                        aria-label={`Écouter le résultat de ${p.title}`}
+                      >
+                        <IconPlay size={12} /> Écouter le résultat
+                      </Link>
+                    )}
+                    <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted transition hover:bg-red-500/20 hover:text-red-300" aria-label={`Supprimer ${p.title}`}>
+                      <IconTrash size={15} />
+                    </button>
+                  </div>
                 </div>
               </li>
             );

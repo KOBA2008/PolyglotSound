@@ -21,9 +21,9 @@ export default function Verifier() {
   let verdict: { tone: string; icon: ReactNode; title: string; text: string } | null = null;
   if (res) {
     if (res.detected) {
-      verdict = { tone: "border-lime/60 bg-lime/10 text-lime", icon: <IconShield size={40} />, title: "Version autorisée PolyglotSound", text: "Ce fichier porte le filigrane AudioSeal d'une adaptation validée par l'artiste." };
+      verdict = { tone: "border-mint/60 bg-mint/10 text-mint", icon: <IconShield size={40} />, title: "Version autorisée PolyglotSound", text: "Ce fichier porte le filigrane AudioSeal d'une adaptation validée par l'artiste." };
     } else if (res.mode === "demo") {
-      verdict = { tone: "border-orange/60 bg-orange/10 text-orange-300", icon: <IconAlert size={40} />, title: "Mode démo", text: "La détection AudioSeal demande le worker GPU. Aucun verdict fiable n'est possible pour l'instant." };
+      verdict = { tone: "border-gold/60 bg-gold/10 text-gold", icon: <IconAlert size={40} />, title: "Mode démo", text: "La détection AudioSeal demande le worker GPU. Aucun verdict fiable n'est possible pour l'instant." };
     } else {
       verdict = { tone: "border-red-400/60 bg-red-500/10 text-red-300", icon: <IconX size={40} />, title: "Aucun filigrane détecté", text: "Ce fichier ne provient pas d'une adaptation PolyglotSound signée, ou il a été fortement altéré." };
     }
@@ -52,10 +52,10 @@ export default function Verifier() {
             {res.mode !== "demo" && (
               <div className="mt-4">
                 <div className="flex justify-between text-xs text-muted"><span>Confiance</span><span className="font-mono">{Math.round((res.confidence ?? 0) * 100)} %</span></div>
-                <div className="mt-1 h-2 overflow-hidden rounded-full bg-white/10"><div className="grad h-full rounded-full" style={{ width: `${Math.min(100, (res.confidence ?? 0) * 100)}%` }} /></div>
+                <div className="neo-well mt-1 h-2 overflow-hidden"><div className="grad h-full rounded-full" style={{ width: `${Math.min(100, (res.confidence ?? 0) * 100)}%` }} /></div>
               </div>
             )}
-            {res.message && <p className="mt-3 text-sm">Message embarqué : <code className="rounded bg-black/30 px-1.5 py-0.5">{res.message}</code></p>}
+            {res.message && <p className="mt-3 text-sm">Message embarqué : <code className="rounded bg-night/90 px-1.5 py-0.5">{res.message}</code></p>}
           </div>
         </div>
       )}

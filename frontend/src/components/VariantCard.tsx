@@ -6,7 +6,7 @@ export function SyllableCountBadge({ count, target }: { count: number; target: n
   const ok = count === target;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold ${ok ? "border-lime/60 bg-lime/15 text-lime" : "border-red-400/60 bg-red-500/15 text-red-300"}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold ${ok ? "border-mint/60 bg-mint/15 text-mint" : "border-red-400/60 bg-red-500/15 text-red-300"}`}
       aria-label={`${count} syllabes sur ${target}${ok ? ", compte exact" : ", compte incorrect"}`}
     >
       {count}/{target}{ok ? " syllabes ✓" : ""}
@@ -37,7 +37,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
       type={onSelect ? "button" : undefined}
       onClick={onSelect}
       aria-pressed={onSelect ? !!selected : undefined}
-      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:bg-white/8" : ""} ${selected ? "!border-magenta ring-2 ring-magenta/60 shadow-[0_0_30px_-8px_rgba(214,36,159,.8)]" : ""}`}
+      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:bg-white/[.06]" : ""} ${selected ? "!border-brand ring-2 ring-brand/50 shadow-[0_0_30px_-8px_rgba(0,208,132,.65)]" : ""}`}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -46,7 +46,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
         <div className="flex items-center gap-2">
           <SyllableCountBadge count={count} target={target} />
           {selected && (
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-magenta text-white"><IconCheck size={14} /></span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-night"><IconCheck size={14} /></span>
           )}
         </div>
       </div>

@@ -17,9 +17,9 @@ export default function DropZone({ file, onFile, label = "Glissez votre fichier 
         const f = e.dataTransfer.files?.[0];
         if (f) onFile(f);
       }}
-      className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${over ? "border-magenta bg-magenta/10" : "border-white/20 bg-white/[.03]"}`}
+      className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${over ? "border-brand bg-brand/10" : "border-white/10 bg-night/40"}`}
     >
-      <IconUpload size={28} className="text-violet-soft" />
+      <IconUpload size={28} className="text-brand-soft" />
       <div>
         <div className="font-semibold">{file ? file.name : label}</div>
         <div className="text-sm text-muted">{file ? `${(file.size / 1024 / 1024).toFixed(2)} Mo` : "WAV, MP3, M4A, OGG ou FLAC · idéalement un refrain de 15 à 40 s"}</div>

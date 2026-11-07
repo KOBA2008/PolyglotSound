@@ -30,10 +30,10 @@ export default function StepDeposit({ project, onCreated, fileUrl }: Props) {
             </div>
           ))}
         </dl>
-        <div className="mt-4 flex items-center gap-2 text-sm text-lime">
+        <div className="mt-4 flex items-center gap-2 text-sm text-mint">
           <IconShield size={16} /> Consentement de l'artiste certifié
         </div>
-        <div className="mt-4"><AudioPlayer src={fileUrl(project.files?.original)} label="Original" accent="violet" /></div>
+        <div className="mt-4"><AudioPlayer src={fileUrl(project.files?.original)} label="Original" accent="brand" /></div>
       </StepCard>
     );
   }
@@ -43,7 +43,7 @@ export default function StepDeposit({ project, onCreated, fileUrl }: Props) {
 function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const [src, setSrc] = useState<SourceLang>("fon");
+  const [src, setSrc] = useState<SourceLang>("yor");
   const [tgt, setTgt] = useState<TargetLang>("eng");
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState(false);
@@ -97,11 +97,12 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
               </select>
             </div>
           </div>
-          {src === tgt && <p className="text-sm text-orange-300">La langue cible est identique à la langue chantée.</p>}
+          <p className="text-xs text-muted"><span className="font-semibold text-gold">Yorùbá en priorité.</span> Déjà pris en charge : Fon, Swahili.</p>
+          {src === tgt && <p className="text-sm text-gold">La langue cible est identique à la langue chantée.</p>}
         </div>
         <div className="space-y-4">
           <DropZone file={file} onFile={setFile} />
-          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${consent ? "border-lime/50 bg-lime/10" : "border-white/15 bg-white/[.03]"}`}>
+          <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${consent ? "border-mint/50 bg-mint/10" : "border-white/15 bg-white/[.03]"}`}>
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 shrink-0" required />
             <span className="text-sm">
               <span className="font-semibold">Je certifie être l'artiste ou disposer de son accord pour utiliser sa voix</span>

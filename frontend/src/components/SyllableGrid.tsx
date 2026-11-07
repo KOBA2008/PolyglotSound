@@ -51,12 +51,12 @@ interface Props {
 }
 
 const TONES = {
-  source: { strong: "bg-gradient-to-b from-magenta to-[#a3167a] border-pink-300/60 text-white shadow-[0_0_18px_-4px_rgba(214,36,159,.9)]", weak: "bg-violet/25 border-violet-soft/40 text-ink" },
-  target: { strong: "bg-gradient-to-b from-magenta to-orange border-orange-200/60 text-white shadow-[0_0_18px_-4px_rgba(249,115,22,.8)]", weak: "bg-cyan/15 border-cyan/45 text-ink" },
-  bad: { strong: "bg-red-500/50 border-red-300/70 text-white", weak: "bg-red-500/15 border-red-400/50 text-red-100" },
+  source: { strong: "bg-gradient-to-b from-gold-soft to-gold border-gold/70 text-night shadow-[0_0_18px_-4px_rgba(255,215,0,.75)]", weak: "bg-brand/20 border-brand-soft/35 text-ink" },
+  target: { strong: "bg-gradient-to-b from-brand-soft to-brand border-brand-soft/60 text-night shadow-[0_0_18px_-4px_rgba(0,208,132,.8)]", weak: "bg-teal/15 border-teal/45 text-ink" },
+  bad: { strong: "bg-flame/60 border-flame-soft/70 text-white", weak: "bg-flame/15 border-flame/50 text-flame-soft" },
 };
 
-/** Grille musicale : une case par syllabe, largeur proportionnelle à sa durée, magenta = temps fort. */
+/** Grille musicale : une case par syllabe, largeur proportionnelle à sa durée, or = temps fort. */
 export default function SyllableGrid({ cells, t0, t1, tone = "source", pitch, currentTime, height = 46, ticks, onToggle, label }: Props) {
   const span = Math.max(t1 - t0, 0.001);
   const pos = (t: number) => ((t - t0) / span) * 100;
@@ -71,7 +71,7 @@ export default function SyllableGrid({ cells, t0, t1, tone = "source", pitch, cu
           {cells.map((c, i) => {
             const active = playing && currentTime! >= c.start && currentTime! < c.end;
             const style = { left: `${pos(c.start)}%`, width: `${Math.max(pos(c.end) - pos(c.start), 0.5)}%` };
-            const cls = `absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-lg border px-0.5 text-[13px] font-semibold leading-none transition-all duration-150 ${c.stress ? pal.strong : pal.weak} ${active ? "scale-y-110 ring-2 ring-lime brightness-125" : ""}`;
+            const cls = `absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-lg border px-0.5 text-[13px] font-semibold leading-none transition-all duration-150 ${c.stress ? pal.strong : pal.weak} ${active ? "scale-y-110 ring-2 ring-mint brightness-125" : ""}`;
             const title = `${c.text || "syllabe " + (i + 1)}${c.stress ? " (temps fort)" : ""}${tone !== "bad" ? ` · ${c.start.toFixed(2)}s` : ""}`;
             const inner = <span className="truncate">{c.text}</span>;
             return onToggle ? (
@@ -93,7 +93,7 @@ export default function SyllableGrid({ cells, t0, t1, tone = "source", pitch, cu
             );
           })}
           {playing && (
-            <div className="pointer-events-none absolute -top-1 -bottom-1 w-0.5 rounded bg-lime shadow-[0_0_10px_#a3e635]" style={{ left: `${pos(currentTime!)}%` }} />
+            <div className="pointer-events-none absolute -top-1 -bottom-1 w-0.5 rounded bg-mint shadow-[0_0_10px_#8cffc1]" style={{ left: `${pos(currentTime!)}%` }} />
           )}
         </div>
       </div>
@@ -149,9 +149,9 @@ export function PitchCurve({ pitch, t0, t1, height = 40 }: { pitch: Pitch; t0: n
     <svg className="absolute inset-x-0 top-0 w-full" style={{ height }} viewBox={`0 0 ${W} ${height}`} preserveAspectRatio="none" aria-label="Courbe de mélodie de la voix" role="img">
       <defs>
         <linearGradient id="f0grad" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0" stopColor="#0ea5c6" />
-          <stop offset=".5" stopColor="#a3e635" />
-          <stop offset="1" stopColor="#f97316" />
+          <stop offset="0" stopColor="#2dd4bf" />
+          <stop offset=".5" stopColor="#8cffc1" />
+          <stop offset="1" stopColor="#ffd700" />
         </linearGradient>
       </defs>
       {paths.map((d, k) => (

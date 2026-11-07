@@ -28,11 +28,11 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
       {done && (
         <div className="mt-5 flex flex-wrap items-center gap-4">
           {wm.applied ? (
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime/50 bg-lime/10 px-4 py-2 text-sm font-semibold text-lime">
+            <span className="inline-flex items-center gap-2 rounded-full border border-mint/50 bg-mint/10 px-4 py-2 text-sm font-semibold text-mint">
               <IconShield size={16} /> Filigrane AudioSeal appliqué{wm.message ? ` · ${wm.message}` : ""}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-2 rounded-full border border-orange/50 bg-orange/10 px-4 py-2 text-sm font-semibold text-orange-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-gold/10 px-4 py-2 text-sm font-semibold text-gold">
               <IconAlert size={16} /> Filigrane non appliqué{project.mode === "demo" ? " (mode démo, worker GPU requis)" : ""}
             </span>
           )}

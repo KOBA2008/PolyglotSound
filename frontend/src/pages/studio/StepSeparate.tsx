@@ -16,14 +16,14 @@ export default function StepSeparate({ project, run, busy, errors, fileUrl }: St
       error={errors.separate}
     >
       {project.mode === "demo" && (
-        <p className="mb-4 rounded-xl border border-orange/40 bg-orange/10 p-3 text-sm text-orange-200">
+        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
           Mode démo : séparation approximative par annulation de phase. Le worker GPU utilise Demucs pour une séparation studio.
         </p>
       )}
       <div className="grid gap-3 lg:grid-cols-3">
-        <AudioPlayer src={fileUrl(project.files.original)} label="Original" accent="violet" />
-        <AudioPlayer src={fileUrl(project.files.vocals)} label="Voix" accent="magenta" download />
-        <AudioPlayer src={fileUrl(project.files.instrumental)} label="Instrumentale" accent="cyan" download />
+        <AudioPlayer src={fileUrl(project.files.original)} label="Original" accent="brand" />
+        <AudioPlayer src={fileUrl(project.files.vocals)} label="Voix" accent="gold" download />
+        <AudioPlayer src={fileUrl(project.files.instrumental)} label="Instrumentale" accent="teal" download />
       </div>
     </StepCard>
   );

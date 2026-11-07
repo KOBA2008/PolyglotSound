@@ -22,7 +22,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
     <StepCard
       number={4}
       title="Grille musicale"
-      subtitle="Chaque syllabe devient une case, aussi longue que la note chantée. En magenta, les temps forts : la traduction devra y placer ses accents."
+      subtitle="Chaque syllabe devient une case, aussi longue que la note chantée. En gold, les temps forts : la traduction devra y placer ses accents."
       state={st}
       onRun={() => void run("align")}
       runLabel="Construire la grille"
@@ -32,7 +32,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
     >
       {!lines.length && <p className="text-muted">Il faut d'abord des lignes transcrites (étape 3).</p>}
       {missingText > 0 && (
-        <p className="mb-4 rounded-xl border border-orange/40 bg-orange/10 p-3 text-sm text-orange-200">
+        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
           {missingText} ligne{missingText > 1 ? "s n'ont" : " n'a"} pas encore de paroles : complétez-les à l'étape 3 puis reconstruisez la grille.
         </p>
       )}
@@ -46,7 +46,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
               ["Temps forts", totalStress],
               ["Mélodie", project.pitch?.f0?.length ? "détectée" : "absente"],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-xl bg-white/5 p-3">
+              <div key={k} className="neo-inset rounded-xl p-3">
                 <div className="label">{k}</div>
                 <div className="font-display text-2xl font-extrabold">{v}</div>
               </div>
@@ -54,7 +54,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
           </div>
 
           {/* Vue d'ensemble du morceau */}
-          <div className="mb-8 rounded-2xl border border-white/10 bg-black/20 p-4">
+          <div className="neo-inset mb-8 rounded-2xl p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h3 className="font-display font-extrabold">Vue d'ensemble</h3>
               <button type="button" className="btn btn-ghost btn-sm" disabled={!player.available} onClick={() => player.play(FULL, 0, duration)}>
@@ -67,14 +67,14 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
                 {lines.map((l) => (
                   <div
                     key={l.index}
-                    className={`absolute inset-y-0 flex items-center justify-center overflow-hidden rounded-md border text-[11px] font-bold transition ${now !== null && now >= l.start && now < l.end ? "border-lime bg-lime/30" : "border-violet-soft/40 bg-violet/30"}`}
+                    className={`absolute inset-y-0 flex items-center justify-center overflow-hidden rounded-md border text-[11px] font-bold transition ${now !== null && now >= l.start && now < l.end ? "border-mint bg-mint/30" : "border-brand-soft/40 bg-brand/30"}`}
                     style={{ left: `${(l.start / duration) * 100}%`, width: `${((l.end - l.start) / duration) * 100}%` }}
                     title={l.text}
                   >
                     {l.index + 1}
                   </div>
                 ))}
-                {now !== null && <div className="absolute -top-16 bottom-0 w-0.5 bg-lime shadow-[0_0_10px_#a3e635]" style={{ left: `${(now / duration) * 100}%` }} />}
+                {now !== null && <div className="absolute -top-16 bottom-0 w-0.5 bg-mint shadow-[0_0_10px_#8cffc1]" style={{ left: `${(now / duration) * 100}%` }} />}
               </div>
             </div>
           </div>
@@ -84,22 +84,22 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
               const cells = cellsFromLine(l);
               const playing = player.active === l.index || player.active === FULL;
               return (
-                <li key={l.index} className="rounded-2xl border border-white/10 bg-white/[.03] p-4 md:p-5">
+                <li key={l.index} className="neo-inset rounded-2xl p-4 md:p-5">
                   <div className="mb-3 flex flex-wrap items-center gap-3">
                     <button
                       type="button"
                       onClick={() => player.play(l.index, l.start, l.end)}
                       disabled={!player.available}
-                      className="grad flex h-9 w-9 items-center justify-center rounded-full text-white"
+                      className="grad flex h-9 w-9 items-center justify-center rounded-full"
                       aria-label={player.active === l.index ? `Arrêter la ligne ${l.index + 1}` : `Écouter la ligne ${l.index + 1}`}
                     >
                       {player.active === l.index ? <IconPause size={13} /> : <IconPlay size={13} />}
                     </button>
-                    <span className="font-display text-sm font-extrabold text-violet-soft">Ligne {l.index + 1}</span>
+                    <span className="font-display text-sm font-extrabold text-brand-soft">Ligne {l.index + 1}</span>
                     <span className="font-display text-lg font-bold">{l.text || <em className="text-muted">sans paroles</em>}</span>
                     <span className="ml-auto flex items-center gap-2 text-xs text-muted">
-                      <span className="rounded-full bg-white/8 px-2 py-0.5 font-mono">{l.n_syllables} syllabes</span>
-                      <span className="rounded-full bg-magenta/20 px-2 py-0.5 font-mono text-pink-200">{l.stress_positions?.length ?? 0} temps forts</span>
+                      <span className="rounded-full bg-white/[.06] px-2 py-0.5 font-mono">{l.n_syllables} syllabes</span>
+                      <span className="rounded-full bg-gold/20 px-2 py-0.5 font-mono text-gold">{l.stress_positions?.length ?? 0} temps forts</span>
                       <span className="font-mono">{fmtSec(l.start)} à {fmtSec(l.end)}</span>
                     </span>
                   </div>
@@ -128,10 +128,10 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
 function Legend({ pitch }: { pitch: boolean }) {
   return (
     <div className="mt-5 flex flex-wrap items-center gap-5 text-sm text-muted">
-      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded bg-gradient-to-b from-magenta to-[#a3167a]" /> Temps fort</span>
-      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded border border-violet-soft/40 bg-violet/25" /> Temps faible</span>
-      {pitch && <span className="flex items-center gap-2"><span className="h-1 w-6 rounded bg-gradient-to-r from-cyan via-lime to-orange" /> Mélodie de la voix (f0)</span>}
-      <span className="flex items-center gap-2"><span className="h-4 w-0.5 bg-lime" /> Lecture en cours</span>
+      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded bg-gradient-to-b from-gold-soft to-gold" /> Temps fort</span>
+      <span className="flex items-center gap-2"><span className="h-4 w-6 rounded border border-brand-soft/40 bg-brand/20" /> Temps faible</span>
+      {pitch && <span className="flex items-center gap-2"><span className="h-1 w-6 rounded bg-gradient-to-r from-teal via-mint to-gold" /> Mélodie de la voix (f0)</span>}
+      <span className="flex items-center gap-2"><span className="h-4 w-0.5 bg-mint" /> Lecture en cours</span>
     </div>
   );
 }

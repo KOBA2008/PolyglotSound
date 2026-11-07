@@ -74,21 +74,21 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
       {hasVariants && (
         <>
           <div className="mb-5 flex flex-wrap items-center gap-3 text-sm">
-            <span className="rounded-full border border-lime/40 bg-lime/10 px-3 py-1 font-semibold text-lime">{okCount}/{lines.length} lignes au bon nombre de syllabes</span>
+            <span className="rounded-full border border-mint/40 bg-mint/10 px-3 py-1 font-semibold text-mint">{okCount}/{lines.length} lignes au bon nombre de syllabes</span>
           </div>
           <ol className="space-y-6">
             {lines.map((l) => (
               <LineTranslate key={l.index} line={l} lang={project.target_lang} choice={choices[l.index] ?? ""} onChoose={(t) => choose(l.index, t)} />
             ))}
           </ol>
-          <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] [background:rgba(23,17,48,.96)]">
+          <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/5 bg-night-2/95 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] backdrop-blur">
             <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || (!dirty && saved)}>
               {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les choix
             </button>
-            {dirty && <span className="text-sm text-orange-300">Choix non enregistrés</span>}
+            {dirty && <span className="text-sm text-gold">Choix non enregistrés</span>}
             {saved && !dirty && (
               <>
-                <span className="flex items-center gap-1 text-sm text-lime"><IconCheck size={14} /> Choix enregistrés</span>
+                <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Choix enregistrés</span>
                 <button type="button" className="btn btn-ghost btn-sm ml-auto" onClick={() => goTo(5)}>Passer au chant <IconArrowRight size={14} /></button>
               </>
             )}
@@ -108,9 +108,9 @@ function LineTranslate({ line, lang, choice, onChoose }: { line: Line; lang: Tar
   const live = useSyllables(custom, lang);
 
   return (
-    <li className="rounded-2xl border border-white/10 bg-white/[.03] p-4 md:p-5">
+    <li className="neo-inset rounded-2xl p-4 md:p-5">
       <div className="mb-3 flex flex-wrap items-baseline gap-3">
-        <span className="font-display text-sm font-extrabold text-violet-soft">Ligne {line.index + 1}</span>
+        <span className="font-display text-sm font-extrabold text-brand-soft">Ligne {line.index + 1}</span>
         <span className="font-display text-lg font-bold">{line.text}</span>
         {line.meaning && <span className="text-sm italic text-muted">« {line.meaning} »</span>}
       </div>
@@ -126,12 +126,12 @@ function LineTranslate({ line, lang, choice, onChoose }: { line: Line; lang: Tar
         <div className="flex flex-col gap-3 md:flex-row">
           <input
             id={`c-${line.index}`}
-            className={`field ${!isVariant && choice ? "!border-magenta" : ""}`}
+            className={`field ${!isVariant && choice ? "!border-gold" : ""}`}
             value={custom}
             placeholder="Réécrivez la ligne : le compte de syllabes se met à jour en direct"
             onChange={(e) => { setCustom(e.target.value); onChoose(e.target.value); }}
           />
-          {custom && !isVariant && <span className="self-center whitespace-nowrap text-xs font-semibold text-pink-300">Version choisie</span>}
+          {custom && !isVariant && <span className="self-center whitespace-nowrap text-xs font-semibold text-gold">Version choisie</span>}
           {custom && isVariant && (
             <button type="button" className="btn btn-ghost btn-sm whitespace-nowrap" onClick={() => onChoose(custom)}>Choisir ma version</button>
           )}

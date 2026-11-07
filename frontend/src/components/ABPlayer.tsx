@@ -48,19 +48,19 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
 
   return (
     <div className="glass p-5">
-      {a && <audio ref={ra} src={a} preload="auto" onTimeUpdate={onTime("A")} onEnded={() => setPlaying(false)} onLoadedMetadata={(e) => setDur((d) => Math.max(d, e.currentTarget.duration))} />}
-      {b && <audio ref={rb} src={b} preload="auto" onTimeUpdate={onTime("B")} onEnded={() => setPlaying(false)} onLoadedMetadata={(e) => setDur((d) => Math.max(d, e.currentTarget.duration))} />}
+      {a && <audio ref={ra} src={a} preload="auto" onTimeUpdate={onTime("A")} onEnded={() => setPlaying(false)} onLoadedMetadata={(e) => { const d = e.currentTarget.duration; if (isFinite(d)) setDur((prev) => Math.max(prev, d)); }} />}
+      {b && <audio ref={rb} src={b} preload="auto" onTimeUpdate={onTime("B")} onEnded={() => setPlaying(false)} onLoadedMetadata={(e) => { const d = e.currentTarget.duration; if (isFinite(d)) setDur((prev) => Math.max(prev, d)); }} />}
       <div className="flex flex-wrap items-center gap-4">
         <button
           type="button"
           onClick={toggle}
           disabled={disabled}
           aria-label={playing ? "Pause" : "Lecture"}
-          className="grad flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-white shadow-[0_10px_40px_-10px_rgba(214,36,159,.9)] transition hover:scale-105 disabled:opacity-40"
+          className="grad flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-[0_10px_40px_-10px_rgba(0,208,132,.75)] transition hover:scale-105 disabled:opacity-40"
         >
           {playing ? <IconPause size={24} /> : <IconPlay size={24} />}
         </button>
-        <div className="inline-flex rounded-full border border-white/15 bg-black/30 p-1" role="radiogroup" aria-label="Version écoutée">
+        <div className="neo-inset inline-flex rounded-full p-1" role="radiogroup" aria-label="Version écoutée">
           {(["A", "B"] as const).map((s) => (
             <button
               key={s}
@@ -69,7 +69,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
               aria-checked={side === s}
               disabled={disabled}
               onClick={() => switchTo(s)}
-              className={`rounded-full px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-violet text-white" : "grad text-white") : "text-muted hover:text-white"}`}
+              className={`rounded-full px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-brand text-night" : "grad") : "text-muted hover:text-ink"}`}
             >
               {s === "A" ? labelA : labelB}
             </button>
@@ -87,7 +87,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
         onChange={(e) => seek(Number(e.target.value))}
         aria-label="Position de lecture"
         className="mt-4 h-2 w-full"
-        style={{ background: `linear-gradient(90deg, #d6249f ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
+        style={{ background: `linear-gradient(90deg, #00d084 ${pct}%, rgba(255,255,255,.15) ${pct}%)` }}
       />
       {disabled && <p className="mt-3 text-sm text-muted">La comparaison sera disponible après la finalisation.</p>}
       {!disabled && <p className="mt-3 text-sm text-muted">Basculez pendant la lecture : les deux versions restent calées au même instant.</p>}

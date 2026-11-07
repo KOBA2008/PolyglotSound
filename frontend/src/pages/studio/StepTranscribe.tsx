@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, errMsg } from "../../api";
 import type { StepProps } from "./shared";
 import { fmtSec } from "./shared";
 import StepCard from "../../components/StepCard";
 import { useSegmentPlayer } from "../../components/useSegmentPlayer";
 import { useSyllables } from "../../components/useSyllables";
+import YorubaKeyboard from "../../components/YorubaKeyboard";
+import { insertAtCursor } from "../../components/insertAtCursor";
 import { IconLoader, IconPause, IconPlay, IconSave, IconArrowRight, IconCheck } from "../../components/icons";
 
 interface Draft { index: number; text: string; meaning: string }
@@ -16,6 +18,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const lyricsRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const player = useSegmentPlayer(fileUrl(project.files.vocals ?? project.files.original));
 
   useEffect(() => {
@@ -46,6 +49,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
   };
 
   const empty = drafts.filter((d) => !d.text.trim()).length;
+  const insertYoruba = (d: Draft, ch: string) => insertAtCursor(lyricsRefs.current[d.index], ch, d.text, (text) => update(d.index, { text }));
 
   return (
     <StepCard
@@ -61,7 +65,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
     >
       {project.steps.separate.status !== "done" && <p className="mb-4 text-sm text-muted">Terminez d'abord la séparation : la transcription travaille sur la voix isolée.</p>}
       {project.mode === "demo" && (
-        <p className="mb-4 rounded-xl border border-orange/40 bg-orange/10 p-3 text-sm text-orange-200">
+        <p className="mb-4 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-gold">
           Tapez les paroles, la transcription automatique demande le worker GPU. Les lignes sont détectées à partir des silences de la voix.
         </p>
       )}
@@ -73,9 +77,9 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
           const line = project.lines.find((l) => l.index === d.index)!;
           const playing = player.active === d.index;
           return (
-            <li key={d.index} className="rounded-2xl border border-white/10 bg-white/[.03] p-4">
+            <li key={d.index} className="neo-inset rounded-2xl p-4">
               <div className="mb-3 flex flex-wrap items-center gap-3">
-                <span className="font-display text-sm font-extrabold text-violet-soft">Ligne {d.index + 1}</span>
+                <span className="font-display text-sm font-extrabold text-brand-soft">Ligne {d.index + 1}</span>
                 <span className="font-mono text-xs text-muted">{fmtSec(line.start)} à {fmtSec(line.end)}</span>
                 <button
                   type="button"
@@ -87,15 +91,16 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
                   {playing ? <IconPause size={12} /> : <IconPlay size={12} />} {playing ? "Stop" : "Écouter"}
                 </button>
                 {playing && (
-                  <div className="h-1 w-32 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-                    <div className="h-full bg-lime" style={{ width: `${Math.min(100, ((player.time - line.start) / (line.end - line.start)) * 100)}%` }} />
+                  <div className="neo-well h-1 w-32 overflow-hidden" aria-hidden="true">
+                    <div className="h-full bg-mint" style={{ width: `${Math.min(100, ((player.time - line.start) / (line.end - line.start)) * 100)}%` }} />
                   </div>
                 )}
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <label className="label" htmlFor={`t-${d.index}`}>Paroles ({project.source_lang})</label>
-                  <input id={`t-${d.index}`} className="field font-semibold" value={d.text} onChange={(e) => update(d.index, { text: e.target.value })} placeholder="Tapez les paroles chantées" />
+                  <input ref={(el) => { lyricsRefs.current[d.index] = el; }} id={`t-${d.index}`} className="field font-semibold" value={d.text} onChange={(e) => update(d.index, { text: e.target.value })} placeholder="Tapez les paroles chantées" />
+                  <YorubaKeyboard onInsert={(ch) => insertYoruba(d, ch)} label={`Clavier yorùbá · ligne ${d.index + 1}`} />
                   <SyllableCounter text={d.text} lang={project.source_lang} />
                 </div>
                 <div>
@@ -108,12 +113,12 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
         })}
       </ol>
       {drafts.length > 0 && (
-        <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] [background:rgba(23,17,48,.96)]">
+        <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/5 bg-night-2/95 p-3 shadow-[0_-10px_40px_-10px_rgba(0,0,0,.6)] backdrop-blur">
           <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || !dirty}>
             {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les corrections
           </button>
-          {dirty && <span className="text-sm text-orange-300">Modifications non enregistrées</span>}
-          {saved && !dirty && <span className="flex items-center gap-1 text-sm text-lime"><IconCheck size={14} /> Enregistré</span>}
+          {dirty && <span className="text-sm text-gold">Modifications non enregistrées</span>}
+          {saved && !dirty && <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Enregistré</span>}
           {empty > 0 && <span className="text-sm text-muted">{empty} ligne{empty > 1 ? "s" : ""} sans paroles</span>}
           {saved && !dirty && (
             <button type="button" className="btn btn-ghost btn-sm ml-auto" onClick={() => goTo(3)}>
@@ -131,12 +136,12 @@ function SyllableCounter({ text, lang }: { text: string; lang: string }) {
   if (!text.trim()) return null;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
-      <span className="rounded-full bg-violet/30 px-2 py-0.5 font-mono text-xs font-bold text-violet-100">
+      <span className="rounded-full border border-brand/30 bg-brand/15 px-2 py-0.5 font-mono text-xs font-bold text-brand-soft">
         {loading && count === null ? "..." : error ? "?" : count} syllabe{count === 1 ? "" : "s"}
       </span>
       {loading && <IconLoader size={12} className="text-muted" />}
       {split.map((s, i) => (
-        <span key={i} className="rounded-md bg-white/8 px-1.5 py-0.5 text-xs text-muted">{s}</span>
+        <span key={i} className="rounded-md bg-white/[.06] px-1.5 py-0.5 text-xs text-muted">{s}</span>
       ))}
     </div>
   );

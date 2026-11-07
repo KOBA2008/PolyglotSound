@@ -26,7 +26,7 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
     <section className="glass fade-in p-5 md:p-7" aria-labelledby={`step-${number}`}>
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <span className="grad flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-lg font-extrabold text-white">{number}</span>
+          <span className="grad flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-lg font-extrabold">{number}</span>
           <div>
             <h2 id={`step-${number}`} className="font-display text-2xl font-extrabold tracking-tight md:text-3xl">{title}</h2>
             {subtitle && <p className="mt-1 max-w-2xl text-muted">{subtitle}</p>}
@@ -46,12 +46,12 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
 
       {running && (
         <div className="mt-5" aria-live="polite">
-          <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <div className="neo-well h-2 overflow-hidden">
             <div
               className="pulse-bar h-full rounded-full transition-all"
               style={{
                 width: `${Math.max(state!.progress || 0, 8)}%`,
-                backgroundImage: "linear-gradient(90deg,#6d28d9,#d6249f,#f97316,#6d28d9)",
+                backgroundImage: "linear-gradient(90deg,#00d084,#ffd700,#ff3b30,#00d084)",
               }}
             />
           </div>

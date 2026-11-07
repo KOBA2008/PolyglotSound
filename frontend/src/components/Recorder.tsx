@@ -64,7 +64,7 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
       <div className="flex flex-wrap items-center gap-3">
         {!rec ? (
           <button type="button" className="btn btn-ghost" onClick={() => void start()}>
-            <IconMic size={16} className="text-magenta" /> Enregistrer au micro
+            <IconMic size={16} className="text-gold" /> Enregistrer au micro
           </button>
         ) : (
           <button type="button" className="btn bg-red-600 text-white hover:bg-red-500" onClick={stop}>
