@@ -18,6 +18,14 @@ stop
 
 [ -f "$ROOT/backend/.env" ] || cp "$ROOT/backend/.env.example" "$ROOT/backend/.env"
 
+# Projets partagés par l'équipe (demo/projects/<id>/project.json + audios) copiés dans backend/data s'ils manquent
+DATA="$ROOT/backend/data"; mkdir -p "$DATA"
+for d in "$ROOT"/demo/projects/*/; do
+  [ -f "$d/project.json" ] || continue
+  id="$(basename "$d")"
+  [ -d "$DATA/$id" ] || { cp -r "$d" "$DATA/$id"; echo "Projet partagé importé : $id"; }
+done
+
 (cd "$ROOT/backend" && setsid ./run.sh > "$LOGS/backend.log" 2>&1 &)
 (cd "$ROOT/frontend" && setsid npm run dev -- --port 5173 > "$LOGS/frontend.log" 2>&1 &)
 
