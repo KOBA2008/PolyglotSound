@@ -34,6 +34,12 @@ Ouvrir http://localhost:5173. Sans `WORKER_URL`, l'application tourne en **mode 
 
 Ouvrir `worker/PolyglotSound_Worker.ipynb` dans Google Colab (GPU T4), renseigner `REPO_URL` avec l'URL de ce dépôt, tout exécuter, puis copier l'URL `trycloudflare.com` affichée dans `backend/.env` (`WORKER_URL=...`). Détails dans `worker/README.md`.
 
+## Documentation
+
+- [Journal du projet](docs/JOURNAL.md) : idées, décisions, textes du formulaire, constats techniques
+- [Reste à faire](docs/TODO.md)
+- [Contrat d'API](docs/CONTRACT.md)
+
 ## Branches
 
 - `main` : version stable pour la démo
