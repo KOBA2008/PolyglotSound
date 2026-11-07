@@ -1,6 +1,8 @@
 import type { StepProps } from "./shared";
 import StepCard from "../../components/StepCard";
 import ABPlayer from "../../components/ABPlayer";
+import LyricsPlayer from "../../components/LyricsPlayer";
+import { langLabel } from "../../types";
 import { IconDownload, IconShield, IconAlert } from "../../components/icons";
 
 export default function StepFinalize({ project, run, busy, errors, fileUrl }: StepProps) {
@@ -25,6 +27,15 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
     >
       {project.steps.sing.status !== "done" && <p className="mb-4 text-sm text-muted">Il faut d'abord la voix chantée (étape 6).</p>}
       <ABPlayer a={fileUrl(project.files.original)} b={done ? fileUrl(final) : null} />
+      {done && (
+        <LyricsPlayer
+          lines={project.lines}
+          adapted={fileUrl(final)}
+          original={fileUrl(project.files.original)}
+          adaptedLabel={langLabel(project.target_lang)}
+          originalLabel={langLabel(project.source_lang)}
+        />
+      )}
       {done && (
         <div className="mt-5 flex flex-wrap items-center gap-4">
           {wm.applied ? (
