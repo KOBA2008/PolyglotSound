@@ -14,6 +14,7 @@ import numpy as np
 
 from app import audio, store
 from app import worker_client as worker
+from app import groq_fallback
 from app.lyrics_bridge import adapt_line, count_syllables, split_syllables
 from app.models import Line, Pitch, Project, Syllable, Variant
 
@@ -142,6 +143,9 @@ async def step_transcribe(pid: str, body: dict[str, Any]) -> str:
         for l in lines:
             l.n_syllables = count_syllables(l.text, p.source_lang) if l.text else 0
         msg = f"{len(lines)} lignes transcrites. Corrigez le texte si besoin."
+    elif groq_fallback.available(p.source_lang) and (lines := await _groq_lines(pid, vocals, p.source_lang)):
+        msg = (f"{len(lines)} lignes transcrites par Whisper (Groq, sans GPU). "
+               "Vérifiez et corrigez le texte de chaque ligne.")
     else:
         _set_step(pid, "transcribe", progress=30, message="Mode démo : détection des lignes par énergie...")
         energy = await _energy(vocals)
@@ -157,6 +161,21 @@ async def step_transcribe(pid: str, body: dict[str, Any]) -> str:
         pr.pitch = None
     store.update(pid, fn)
     return msg
+
+
+async def _groq_lines(pid: str, vocals: Path, lang: str) -> list[Line]:
+    """Repli sans worker : Whisper via Groq. Liste vide si échec (on retombe sur l'énergie)."""
+    _set_step(pid, "transcribe", progress=30, message="Transcription Whisper (Groq)...")
+    try:
+        segs = await groq_fallback.transcribe(vocals, lang)
+    except Exception as exc:  # noqa: BLE001 : le repli ne doit jamais casser l'étape
+        log.warning("Transcription Groq en échec : %s", exc)
+        return []
+    lines = [Line(index=i, text=s["text"], start=round(s["start"], 2), end=round(s["end"], 2))
+             for i, s in enumerate(segs)]
+    for l in lines:
+        l.n_syllables = count_syllables(l.text, lang)
+    return lines
 
 
 async def step_align(pid: str, body: dict[str, Any]) -> str:
@@ -238,8 +257,19 @@ async def step_translate(pid: str, body: dict[str, Any]) -> str:
             except worker.WorkerError as exc:
                 notes.append(f"Sens non traduit ({exc}).")
         else:
-            notes.append("Mode démo : sans worker, le sens n'est pas traduit automatiquement. "
-                         "Saisissez le sens en français pour de meilleures variantes.")
+            translated = False
+            if groq_fallback.available():
+                _set_step(pid, "translate", progress=10, message="Traduction du sens en français (LLM)...")
+                try:
+                    out = await groq_fallback.meanings_fr([l.text for l in missing], p.source_lang)
+                    for l, t in zip(missing, out):
+                        l.meaning = t
+                    translated = True
+                except Exception as exc:  # noqa: BLE001
+                    log.warning("Sens via LLM en échec : %s", exc)
+            if not translated:
+                notes.append("Mode démo : sans worker, le sens n'est pas traduit automatiquement. "
+                             "Saisissez le sens en français pour de meilleures variantes.")
 
     # 2. Variantes chantables, en parallèle (4 lignes à la fois)
     _set_step(pid, "translate", progress=30, message="Écriture des variantes chantables...")
