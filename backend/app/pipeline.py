@@ -328,6 +328,37 @@ def _chosen_text(l: Line) -> str:
     return l.variants[0].text if l.variants else ""
 
 
+async def _convert_chunked(pid: str, guide: Path, reference: Path, dst: Path, lines: list[Line],
+                           semitones: int, steps: int, max_len: float = 15.0) -> None:
+    """Seed-VC par tronçons coupés entre deux phrases, recollés avec fondus de 20 ms."""
+    sr = audio.settings.sample_rate
+    g = await asyncio.to_thread(audio.read_pcm, guide, sr)
+    total = len(g) / sr
+    cuts, start = [0.0], 0.0
+    for a, b in zip(lines, lines[1:]):
+        if b.start - start > max_len:
+            cuts.append((a.end + b.start) / 2)
+            start = cuts[-1]
+    cuts.append(total)
+    out = np.zeros(len(g), dtype=np.float32)
+    for k, (a, b) in enumerate(zip(cuts, cuts[1:])):
+        _set_step(pid, "sing", progress=20 + int(70 * k / (len(cuts) - 1)),
+                  message=f"Conversion Seed-VC haute qualité, tronçon {k + 1}/{len(cuts) - 1}...")
+        part = _path(pid, f"_chunk{k}.wav")
+        seg = g[int(a * sr): int(b * sr)]
+        await asyncio.to_thread(audio._write_mono, seg, sr, part)
+        data = await worker.convert(part, reference, semitones, steps)
+        conv = _path(pid, f"_chunk{k}_out.wav")
+        await asyncio.to_thread(audio.write_wav_bytes, data, conv, 1)
+        y = (await asyncio.to_thread(audio.read_pcm, conv, sr))[: len(seg)]
+        f = min(len(y) // 4, int(0.02 * sr))
+        if f > 0:
+            r = np.linspace(0, 1, f, dtype=np.float32); y[:f] *= r; y[-f:] *= r[::-1]
+        i = int(a * sr); out[i:i + len(y)] += y
+        part.unlink(missing_ok=True); conv.unlink(missing_ok=True)
+    await asyncio.to_thread(audio._write_mono, out, sr, dst)
+
+
 def _fit_spans(spans: list[tuple[float, float]], n: int) -> list[tuple[float, float]]:
     """Ramène une liste de notes (début, fin) à n notes en conservant les attaques d'origine."""
     sp = [list(x) for x in sorted(spans) if x[1] > x[0]] or [[0.0, 0.1]]
@@ -357,8 +388,13 @@ async def step_sing(pid: str, body: dict[str, Any]) -> str:
             raise StepError("Déposez d'abord une voix guide chantée dans la langue cible.")
         if live:
             _set_step(pid, "sing", progress=20, message="Conversion de voix Seed-VC sur le worker GPU...")
-            data = await worker.convert(guide, reference, int(body.get("semitones", 0)))
-            await asyncio.to_thread(audio.write_wav_bytes, data, sung, 1)
+            steps = body.get("steps")
+            if steps and int(steps) > 25 and p.lines:
+                # qualité maximale : conversion par tronçons (~15 s) pour rester sous la coupure du tunnel
+                await _convert_chunked(pid, guide, reference, sung, p.lines, int(body.get("semitones", 0)), int(steps))
+            else:
+                data = await worker.convert(guide, reference, int(body.get("semitones", 0)), steps)
+                await asyncio.to_thread(audio.write_wav_bytes, data, sung, 1)
             msg = "Timbre de l'artiste appliqué (Seed-VC)."
         else:
             await asyncio.to_thread(shutil.copyfile, guide, sung)

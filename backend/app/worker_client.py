@@ -119,9 +119,11 @@ async def translate(texts: list[str], src: str, tgt: str) -> list[str]:
     return [str(t) for t in (p.get("texts") or [])]
 
 
-async def convert(source: Path, reference: Path, semitones: int = 0) -> bytes:
-    return decode_audio(await _post("/convert", files={"source": source, "reference": reference},
-                                    data={"semi_tone_shift": str(int(semitones))}))
+async def convert(source: Path, reference: Path, semitones: int = 0, steps: int | None = None) -> bytes:
+    data = {"semi_tone_shift": str(int(semitones))}
+    if steps:
+        data["diffusion_steps"] = str(int(steps))
+    return decode_audio(await _post("/convert", files={"source": source, "reference": reference}, data=data))
 
 
 async def sing_auto(reference: Path, plan: dict[str, Any]) -> bytes:
