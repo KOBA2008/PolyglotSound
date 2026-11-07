@@ -4,7 +4,6 @@ import type { TargetLang, Variant } from "../types";
 import { TARGET_LANGS } from "../types";
 import SyllableGrid, { uniformCells } from "../components/SyllableGrid";
 import VariantCard from "../components/VariantCard";
-import Wave from "../components/Wave";
 import YorubaKeyboard from "../components/YorubaKeyboard";
 import { insertAtCursor } from "../components/insertAtCursor";
 import { useSyllables } from "../components/useSyllables";
@@ -55,30 +54,39 @@ export default function Atelier() {
         <div>
           <p className="kicker">Démo live · Yorùbá en priorité</p>
           <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">Proposez une <span className="grad-text">phrase</span></h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure. La phrase originale s'écrit en <strong className="font-semibold text-gold-soft">yorùbá</strong>.</p>
-          <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">
-            <span className="rounded-[9px] px-2.5 py-1 text-xs font-semibold text-gold-soft shadow-[var(--inset-sm)]">Yorùbá en priorité</span>
-            Déjà pris en charge : Fon, Swahili
-          </p>
+          <p className="mt-3 max-w-xl text-lg text-muted">Un sens. Une mesure. Des accents.</p>
+          <div className="mt-4 flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+            <span className="rounded-[9px] px-2.5 py-1 text-gold-soft shadow-[var(--inset-sm)]">Yorùbá en priorité</span>
+            <span className="rounded-[9px] px-2.5 py-1 text-muted shadow-[var(--inset-sm)]">Fon</span>
+            <span className="rounded-[9px] px-2.5 py-1 text-muted shadow-[var(--inset-sm)]">Swahili</span>
+          </div>
         </div>
-        <Wave bars={24} height={56} />
+        <div className="hidden overflow-hidden rounded-2xl shadow-[var(--raise-sm)] ring-1 ring-white/60 md:block">
+          <img
+            src="/photos/atelier-voice.jpg"
+            alt="Chanteuse au micro dans une lumière chaude"
+            width={192}
+            height={128}
+            loading="lazy"
+            className="h-32 w-48 object-cover"
+          />
+        </div>
       </header>
 
       <form onSubmit={submit} className="glass grid gap-6 p-5 md:p-7 xl:grid-cols-[1fr_1.2fr]">
         <div className="space-y-4">
           <div>
-            <label htmlFor="meaning" className="label">Le sens de la phrase</label>
-            <textarea id="meaning" rows={3} className="field text-lg" value={meaning} onChange={(e) => setMeaning(e.target.value)} placeholder="Ex. L'amour est une rivière qui ne tarit jamais" required />
+            <label htmlFor="meaning" className="label">Sens de la phrase</label>
+            <textarea id="meaning" rows={3} className="field text-lg" value={meaning} onChange={(e) => setMeaning(e.target.value)} placeholder="Sens de la phrase" required />
           </div>
           <div>
-            <label htmlFor="orig" className="label">Phrase originale (facultatif, en yorùbá en priorité)</label>
+            <label htmlFor="orig" className="label">Phrase originale · facultatif</label>
             <input ref={origRef} id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
             <YorubaKeyboard onInsert={insertYoruba} label="Clavier yorùbá de la phrase originale" />
             <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
               <span className="rounded-[9px] px-2.5 py-1 font-mono text-xs font-bold text-gold-soft shadow-[var(--inset-sm)]">
                 {yor.loading && yor.count === null ? "…" : yor.error ? "?" : yorCount} syllabe{yorCount > 1 ? "s" : ""}
               </span>
-              <span className="text-[11px] text-muted">{yor.loading ? "comptage en cours" : "en yorùbá · mise à jour 300 ms"}</span>
               {yor.split.map((s, i) => (
                 <span key={i} className="rounded-md border border-ink/5 bg-white/60 px-1.5 py-0.5 text-xs text-muted">{s}</span>
               ))}
@@ -105,9 +113,9 @@ export default function Atelier() {
             </div>
           </div>
           <div>
-            <span className="label">Temps forts (cliquez sur les cases)</span>
+            <span className="label">Temps forts</span>
             <SyllableGrid cells={ref} t0={0} t1={n} height={52} onToggle={toggle} label="Motif d'accents" />
-            <p className="mt-2 text-xs text-muted">{stress.length} temps fort{stress.length > 1 ? "s" : ""} · positions {stress.length ? stress.map((i) => i + 1).join(", ") : "aucune"}</p>
+            <p className="mt-2 text-xs text-muted">{stress.length} temps fort{stress.length > 1 ? "s" : ""} · cliquez les cases</p>
           </div>
           <button type="submit" className="btn btn-primary w-full py-3 text-base" disabled={loading || !meaning.trim()}>
             {loading ? <IconLoader size={18} /> : <IconArrowRight size={18} />} {loading ? "Écriture des variantes..." : "Adapter la phrase"}

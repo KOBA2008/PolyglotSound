@@ -46,7 +46,7 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
         void back.current.play().catch(() => {});
       }
     } catch {
-      setError("Micro inaccessible : autorisez le micro dans le navigateur (localhost ou HTTPS requis).");
+      setError("Micro inaccessible · autorisez le micro dans le navigateur.");
     }
   };
 
@@ -76,7 +76,7 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
       {backing && (
         <label className="flex items-center gap-2 text-sm text-muted">
           <input type="checkbox" checked={withBacking} onChange={(e) => setWithBacking(e.target.checked)} disabled={rec} />
-          Jouer l'instrumentale pendant l'enregistrement (casque conseillé)
+          Instrumentale en retour · casque conseillé
         </label>
       )}
       {error && <p role="alert" className="text-sm text-flame-soft">{error}</p>}

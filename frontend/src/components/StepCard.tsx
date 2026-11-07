@@ -58,7 +58,9 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
           <p className="mt-2 text-sm text-muted">{state!.message || "Traitement en cours..."}{state!.progress ? ` (${Math.round(state!.progress)} %)` : ""}</p>
         </div>
       )}
-      {done && state?.message && <p className="mt-4 text-sm text-muted" aria-live="polite">{state.message}</p>}
+      {done && state?.message && (
+        <p className="mt-4 line-clamp-1 text-sm text-muted" aria-live="polite" title={state.message}>{state.message}</p>
+      )}
       {(failed || error) && (
         <div role="alert" className="mt-4 flex items-start gap-3 rounded-xl border border-flame/30 bg-flame/8 p-3 text-sm text-flame-soft">
           <IconAlert size={18} className="mt-0.5 shrink-0" />

@@ -62,7 +62,7 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
     <StepCard
       number={5}
       title="Traduction qui se chante"
-      subtitle={`Trois variantes en ${langLabel(project.target_lang).toLowerCase()} par ligne, chacune vérifiée syllabe par syllabe contre la grille originale. L'artiste choisit, ou réécrit.`}
+      subtitle={`Trois variantes en ${langLabel(project.target_lang).toLowerCase()} par ligne. L'artiste choisit.`}
       state={st}
       onRun={() => void run("translate", { n_variants: 3 })}
       runLabel="Générer les variantes"
@@ -70,7 +70,7 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
       error={errors.translate ?? errors.save}
       runDisabled={project.steps.align.status !== "done"}
     >
-      {project.steps.align.status !== "done" && <p className="mb-4 text-sm text-muted">Construisez d'abord la grille musicale (étape 4) : elle fixe le nombre de syllabes à respecter.</p>}
+      {project.steps.align.status !== "done" && <p className="mb-4 text-sm text-muted">Construisez d'abord la grille musicale (étape 4).</p>}
       {hasVariants && (
         <>
           <div className="mb-5 flex flex-wrap items-center gap-3 text-sm">
@@ -83,9 +83,9 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
           </ol>
           <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
             <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || (!dirty && saved)}>
-              {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les choix
+              {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer
             </button>
-            {dirty && <span className="text-sm text-gold-soft">Choix non enregistrés</span>}
+            {dirty && <span className="text-sm text-gold-soft">Non enregistré</span>}
             {saved && !dirty && (
               <>
                 <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Choix enregistrés</span>
@@ -122,13 +122,13 @@ function LineTranslate({ line, lang, choice, onChoose }: { line: Line; lang: Tar
         ))}
       </div>
       <div className="mt-4">
-        <label className="label" htmlFor={`c-${line.index}`}>Votre version (édition libre)</label>
+        <label className="label" htmlFor={`c-${line.index}`}>Votre version</label>
         <div className="flex flex-col gap-3 md:flex-row">
           <input
             id={`c-${line.index}`}
             className={`field ${!isVariant && choice ? "!border-gold-soft" : ""}`}
             value={custom}
-            placeholder="Réécrivez la ligne : le compte de syllabes se met à jour en direct"
+            placeholder="Réécrivez : le compte se met à jour"
             onChange={(e) => { setCustom(e.target.value); onChoose(e.target.value); }}
           />
           {custom && !isVariant && <span className="self-center whitespace-nowrap text-xs font-semibold text-gold-soft">Version choisie</span>}

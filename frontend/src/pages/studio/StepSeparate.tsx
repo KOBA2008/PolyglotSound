@@ -8,7 +8,7 @@ export default function StepSeparate({ project, run, busy, errors, fileUrl }: St
     <StepCard
       number={2}
       title="Séparation"
-      subtitle="On isole la voix de l'artiste et l'instrumentale d'origine, qui sera conservée telle quelle."
+      subtitle="Voix isolée, instrumentale conservée."
       state={st}
       onRun={() => void run("separate")}
       runLabel="Lancer la séparation"
@@ -17,7 +17,7 @@ export default function StepSeparate({ project, run, busy, errors, fileUrl }: St
     >
       {project.mode === "demo" && (
         <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
-          Mode démo : séparation approximative par annulation de phase. Le worker GPU utilise Demucs pour une séparation studio.
+          Mode démo · séparation approximative.
         </p>
       )}
       <div className="grid gap-3 lg:grid-cols-3">

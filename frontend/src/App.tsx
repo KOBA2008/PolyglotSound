@@ -45,7 +45,7 @@ function Layout() {
       <a href="#contenu" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 btn btn-primary">Aller au contenu</a>
       {down && (
         <div role="alert" className="sticky top-0 z-40 flex items-center justify-center gap-2 bg-flame-soft px-4 py-2 text-sm font-semibold text-white">
-          <IconAlert size={16} /> Backend injoignable, lancez <code className="rounded bg-black/15 px-1.5 py-0.5">backend/run.sh</code>
+          <IconAlert size={16} /> Backend injoignable · <code className="rounded bg-black/15 px-1.5 py-0.5">backend/run.sh</code>
         </div>
       )}
       <header className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4 px-5 py-5 md:px-8">
@@ -54,7 +54,7 @@ function Layout() {
           <NavLink to="/" end className={nav}>Accueil</NavLink>
           <NavLink to="/projet/nouveau" className={nav}>Studio</NavLink>
           <NavLink to="/atelier" className={nav}>Atelier jury</NavLink>
-          <NavLink to="/verifier" className={nav}>Vérifier un filigrane</NavLink>
+          <NavLink to="/verifier" className={nav}>Filigrane</NavLink>
         </nav>
         <ModeBadge mode={health?.mode} provider={health?.llm?.provider} compact />
       </header>
@@ -63,12 +63,8 @@ function Layout() {
       </main>
       <footer className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center gap-2 border-t border-ink/10 px-5 py-6 text-xs text-muted md:px-8">
         <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
-        PolyglotSound · Hackathon IA &amp; Musique 2026 · SIMA × Epitech Bénin · <span className="text-muted">Team BLACKYY</span>
-        <span className="ml-auto flex items-center gap-1.5 text-muted">
-          <span className="h-1 w-1 rounded-full bg-gold" aria-hidden="true" />
-          <span className="h-1 w-1 rounded-full bg-flame" aria-hidden="true" />
-          Tradition · Innovation · Impact
-        </span>
+        PolyglotSound · Hackathon IA &amp; Musique 2026 · <span className="text-muted">Team BLACKYY</span>
+        <span className="ml-auto text-muted">SIMA × Epitech Bénin</span>
       </footer>
     </div>
   );

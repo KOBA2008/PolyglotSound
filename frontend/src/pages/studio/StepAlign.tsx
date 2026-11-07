@@ -22,7 +22,7 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
     <StepCard
       number={4}
       title="Grille musicale"
-      subtitle="Chaque syllabe devient une case, aussi longue que la note chantée. En or, les temps forts : la traduction devra y placer ses accents."
+      subtitle="Une case par syllabe. L'or marque les temps forts."
       state={st}
       onRun={() => void run("align")}
       runLabel="Construire la grille"
@@ -30,10 +30,10 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
       error={errors.align}
       runDisabled={!lines.length}
     >
-      {!lines.length && <p className="text-muted">Il faut d'abord des lignes transcrites (étape 3).</p>}
+      {!lines.length && <p className="text-muted">Transcrivez d'abord les paroles (étape 3).</p>}
       {missingText > 0 && (
         <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
-          {missingText} ligne{missingText > 1 ? "s n'ont" : " n'a"} pas encore de paroles : complétez-les à l'étape 3 puis reconstruisez la grille.
+          {missingText} ligne{missingText > 1 ? "s" : ""} sans paroles · complétez à l'étape 3.
         </p>
       )}
 

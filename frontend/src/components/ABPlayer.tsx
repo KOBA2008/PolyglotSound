@@ -89,8 +89,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
         className="mt-4 h-2 w-full"
         style={{ background: `linear-gradient(90deg, #00b877 ${pct}%, rgba(11,15,26,.12) ${pct}%)` }}
       />
-      {disabled && <p className="mt-3 text-sm text-muted">La comparaison sera disponible après la finalisation.</p>}
-      {!disabled && <p className="mt-3 text-sm text-muted">Basculez pendant la lecture : les deux versions restent calées au même instant.</p>}
+      {disabled && <p className="mt-3 text-sm text-muted">Disponible après la finalisation.</p>}
     </div>
   );
 }

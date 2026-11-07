@@ -34,15 +34,15 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
   };
 
   const modes: { k: SingMode; title: string; text: string; icon: typeof IconMic }[] = [
-    { k: "studio", title: "Mode Studio", text: "Quelqu'un chante la version traduite (voix guide). L'IA lui donne le timbre de l'artiste. Le meilleur rendu.", icon: IconMic },
-    { k: "auto", title: "Mode Auto", text: "Synthèse vocale calée sur la grille et la mélodie d'origine, puis conversion vers la voix de l'artiste. Aucun chanteur requis.", icon: IconMusic },
+    { k: "studio", title: "Mode Studio", text: "Un chanteur guide. Meilleur rendu.", icon: IconMic },
+    { k: "auto", title: "Mode Auto", text: "Sans chanteur. Calé sur la mélodie.", icon: IconMusic },
   ];
 
   return (
     <StepCard
       number={6}
       title="Chant"
-      subtitle="La traduction choisie, chantée avec la voix de l'artiste et posée sur la mélodie originale."
+      subtitle="La traduction chantée avec la voix de l'artiste."
       state={st}
       onRun={() => void run("sing", { mode })}
       runLabel="Lancer le chant"
@@ -51,7 +51,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
       runDisabled={mode === "studio" && !hasGuide}
     >
       {chosen < project.lines.length && project.lines.length > 0 && (
-        <p className="mb-4 text-sm text-gold-soft">{project.lines.length - chosen} ligne(s) sans traduction choisie : enregistrez vos choix à l'étape 5.</p>
+        <p className="mb-4 text-sm text-gold-soft">{project.lines.length - chosen} ligne(s) sans traduction · étape 5.</p>
       )}
       <div className="grid gap-3 md:grid-cols-2" role="radiogroup" aria-label="Mode de chant">
         {modes.map(({ k, title, text, icon: Icon }) => (
@@ -74,7 +74,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
 
       {mode === "auto" && project.mode === "demo" && (
         <p className="mt-4 flex items-start gap-2 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
-          <IconAlert size={16} className="mt-0.5 shrink-0" /> Le mode Auto demande le worker GPU (synthèse vocale et conversion de voix). En mode démo, utilisez le mode Studio.
+          <IconAlert size={16} className="mt-0.5 shrink-0" /> Mode Auto · worker GPU requis.
         </p>
       )}
 
@@ -88,7 +88,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             </button>
           </div>
           <div className="space-y-3">
-            <h3 className="font-display font-extrabold">Ou enregistrez-la ici</h3>
+            <h3 className="font-display font-extrabold">Ou enregistrez ici</h3>
             <Recorder
               backing={fileUrl(project.files.instrumental)}
               onDone={(blob, ext) => {
@@ -115,7 +115,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
 
       <div className="mt-6">
         <h3 className="mb-2 font-display font-extrabold">Résultat</h3>
-        <AudioPlayer src={fileUrl(project.files.sung)} label="Voix chantée par PolyglotSound" accent="gold" download />
+        <AudioPlayer src={fileUrl(project.files.sung)} label="Voix chantée" accent="gold" download />
       </div>
     </StepCard>
   );

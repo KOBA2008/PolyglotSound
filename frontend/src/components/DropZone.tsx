@@ -22,7 +22,7 @@ export default function DropZone({ file, onFile, label = "Glissez votre fichier 
       <IconUpload size={28} className="text-brand-soft" />
       <div>
         <div className="font-semibold">{file ? file.name : label}</div>
-        <div className="text-sm text-muted">{file ? `${(file.size / 1024 / 1024).toFixed(2)} Mo` : "WAV, MP3, M4A, OGG ou FLAC · idéalement un refrain de 15 à 40 s"}</div>
+        <div className="text-sm text-muted">{file ? `${(file.size / 1024 / 1024).toFixed(2)} Mo` : "WAV, MP3, M4A · 15 à 40 s"}</div>
       </div>
       <button type="button" className="btn btn-ghost btn-sm" onClick={() => input.current?.click()}>
         {file ? "Changer de fichier" : "Parcourir"}

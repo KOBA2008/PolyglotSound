@@ -17,7 +17,7 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
     <StepCard
       number={7}
       title="Version finale"
-      subtitle="Mixage de la voix chantée sur l'instrumentale d'origine, signé par un filigrane AudioSeal inaudible."
+      subtitle="Mixage sur l'instrumentale d'origine. Filigrane inaudible."
       state={st}
       onRun={() => void run("finalize")}
       runLabel="Finaliser"
@@ -25,7 +25,7 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
       error={errors.finalize}
       runDisabled={project.steps.sing.status !== "done"}
     >
-      {project.steps.sing.status !== "done" && <p className="mb-4 text-sm text-muted">Il faut d'abord la voix chantée (étape 6).</p>}
+      {project.steps.sing.status !== "done" && <p className="mb-4 text-sm text-muted">Lancez d'abord le chant (étape 6).</p>}
       <ABPlayer a={fileUrl(project.files.original)} b={done ? fileUrl(final) : null} />
       {done && (
         <LyricsPlayer
@@ -44,7 +44,7 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
             </span>
           ) : (
             <span className="inline-flex items-center gap-2 rounded-[9px] px-4 py-2 text-sm font-semibold text-gold-soft shadow-[var(--inset-sm)]">
-              <IconAlert size={16} /> Filigrane non appliqué{project.mode === "demo" ? " (mode démo, worker GPU requis)" : ""}
+              <IconAlert size={16} /> Filigrane non appliqué{project.mode === "demo" ? " · mode démo" : ""}
             </span>
           )}
           <div className="ml-auto flex flex-wrap gap-2">

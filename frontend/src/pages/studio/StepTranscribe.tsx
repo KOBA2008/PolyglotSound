@@ -55,7 +55,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
     <StepCard
       number={3}
       title="Transcription et correction"
-      subtitle="Chaque ligne chantée, avec son texte en langue source et son sens en français. L'artiste corrige : c'est lui qui connaît ses paroles."
+      subtitle="Paroles et sens, ligne par ligne. L'artiste corrige."
       state={st}
       onRun={() => void run("transcribe")}
       runLabel="Lancer la transcription"
@@ -63,14 +63,14 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
       error={errors.transcribe ?? errors.save}
       runDisabled={project.steps.separate.status !== "done"}
     >
-      {project.steps.separate.status !== "done" && <p className="mb-4 text-sm text-muted">Terminez d'abord la séparation : la transcription travaille sur la voix isolée.</p>}
+      {project.steps.separate.status !== "done" && <p className="mb-4 text-sm text-muted">Lancez d'abord la séparation (étape 2).</p>}
       {project.mode === "demo" && (
         <p className="mb-4 rounded-xl border border-gold/25 bg-gold/8 p-3 text-sm text-gold-soft">
-          Tapez les paroles, la transcription automatique demande le worker GPU. Les lignes sont détectées à partir des silences de la voix.
+          Mode démo · saisie manuelle des paroles.
         </p>
       )}
       {drafts.length === 0 && st.status !== "running" && (
-        <p className="text-muted">Aucune ligne pour l'instant. Lancez la transcription pour découper la voix en lignes.</p>
+        <p className="text-muted">Aucune ligne. Lancez la transcription.</p>
       )}
       <ol className="space-y-3">
         {drafts.map((d) => {
@@ -105,7 +105,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
                 </div>
                 <div>
                   <label className="label" htmlFor={`m-${d.index}`}>Sens en français</label>
-                  <input id={`m-${d.index}`} className="field" value={d.meaning} onChange={(e) => update(d.index, { meaning: e.target.value })} placeholder="Ce que la ligne veut dire" />
+                  <input id={`m-${d.index}`} className="field" value={d.meaning} onChange={(e) => update(d.index, { meaning: e.target.value })} placeholder="Sens de la ligne" />
                 </div>
               </div>
             </li>
@@ -115,9 +115,9 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
       {drafts.length > 0 && (
         <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
           <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || !dirty}>
-            {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les corrections
+            {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer
           </button>
-          {dirty && <span className="text-sm text-gold-soft">Modifications non enregistrées</span>}
+          {dirty && <span className="text-sm text-gold-soft">Non enregistré</span>}
           {saved && !dirty && <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Enregistré</span>}
           {empty > 0 && <span className="text-sm text-muted">{empty} ligne{empty > 1 ? "s" : ""} sans paroles</span>}
           {saved && !dirty && (

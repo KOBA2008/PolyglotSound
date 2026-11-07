@@ -136,19 +136,17 @@ async def step_separate(pid: str, body: dict[str, Any]) -> str:
         v_bytes, i_bytes = await worker.separate(orig)
         await asyncio.to_thread(audio.write_wav_bytes, v_bytes, vocals, 1)
         await asyncio.to_thread(audio.write_wav_bytes, i_bytes, instr, 2)
-        msg = "Voix et instrumentale séparées (Demucs)."
+        msg = "Séparation Demucs."
     elif os.getenv("DEMUCS_PYTHON") and await _local_demucs(pid, orig, vocals, instr):
-        msg = "Voix et instrumentale séparées (Demucs de Meta, sur le processeur local)."
+        msg = "Séparation Demucs locale."
     else:
         _set_step(pid, "separate", progress=30, message="Mode démo : séparation simplifiée par ffmpeg...")
         await asyncio.to_thread(audio.to_mono, orig, vocals)
         await asyncio.to_thread(audio.phase_cancel, orig, instr)
-        msg = ("Mode démo : la voix est le morceau d'origine en mono, l'instrumentale est obtenue "
-               "par annulation de phase (L-R). Branchez le worker GPU pour une vraie séparation.")
+        msg = "Mode démo · séparation approximative."
         if await asyncio.to_thread(audio.is_silent, instr):
             shutil.copyfile(orig, instr)
-            msg = ("Mode démo : morceau mono, l'annulation de phase est impossible. "
-                   "L'instrumentale est l'original. Branchez le worker GPU pour une vraie séparation.")
+            msg = "Mode démo · morceau mono, instrumentale = original."
 
     def fn(pr: Project) -> None:
         _set_file(pr, "vocals", "vocals.wav")
@@ -180,8 +178,7 @@ async def step_transcribe(pid: str, body: dict[str, Any]) -> str:
         if not segs:
             raise StepError("Aucune voix détectée dans le fichier.")
         lines = [Line(index=i, start=s, end=e) for i, (s, e) in enumerate(segs)]
-        msg = (f"Mode démo : {len(lines)} lignes détectées par l'énergie de la voix. "
-               "La transcription automatique demande le worker GPU : tapez le texte de chaque ligne.")
+        msg = f"Mode démo · {len(lines)} lignes détectées. Saisissez le texte."
 
     def fn(pr: Project) -> None:
         pr.lines = lines
@@ -238,17 +235,16 @@ async def step_align(pid: str, body: dict[str, Any]) -> str:
             if not sylls:  # mot non aligné : repli uniforme
                 sylls = _uniform_syllables(split_syllables(l.text, lang), l.start, l.end)
             _apply_syllables(l, sylls, energy, hop)
-        msg = "Syllabes alignées (MMS) et accents placés sur les temps forts."
+        msg = "Syllabes alignées (MMS), accents placés."
         if pitch is None:
-            msg += " Courbe de mélodie indisponible."
+            msg += " Mélodie indisponible."
     else:
         _set_step(pid, "align", progress=40, message="Mode démo : répartition des syllabes...")
         for l in lines:
             if l.text.strip():
                 _apply_syllables(l, _uniform_syllables(split_syllables(l.text, lang), l.start, l.end),
                                  energy, hop)
-        msg = ("Mode démo : syllabes réparties uniformément sur chaque ligne, accents sur les pics "
-               "d'énergie. L'alignement précis et la mélodie demandent le worker GPU.")
+        msg = "Mode démo · syllabes réparties uniformément."
     for l in lines:
         if not l.text.strip():
             l.syllables, l.n_syllables, l.stress_positions = [], 0, []
@@ -295,8 +291,7 @@ async def step_translate(pid: str, body: dict[str, Any]) -> str:
                 except Exception as exc:  # noqa: BLE001
                     log.warning("Sens via LLM en échec : %s", exc)
             if not translated:
-                notes.append("Mode démo : sans worker, le sens n'est pas traduit automatiquement. "
-                             "Saisissez le sens en français pour de meilleures variantes.")
+                notes.append("Mode démo · sens à saisir en français.")
 
     # 2. Variantes chantables, en parallèle (4 lignes à la fois)
     _set_step(pid, "translate", progress=30, message="Écriture des variantes chantables...")
@@ -364,11 +359,10 @@ async def step_sing(pid: str, body: dict[str, Any]) -> str:
             _set_step(pid, "sing", progress=20, message="Conversion de voix Seed-VC sur le worker GPU...")
             data = await worker.convert(guide, reference, int(body.get("semitones", 0)))
             await asyncio.to_thread(audio.write_wav_bytes, data, sung, 1)
-            msg = "La voix guide chante maintenant avec le timbre de l'artiste (Seed-VC)."
+            msg = "Timbre de l'artiste appliqué (Seed-VC)."
         else:
             await asyncio.to_thread(shutil.copyfile, guide, sung)
-            msg = ("Mode démo : la conversion de voix demande le worker GPU, "
-                   "la voix guide est utilisée telle quelle.")
+            msg = "Mode démo · voix guide utilisée telle quelle."
     else:
         if not live:
             raise StepError("Le mode auto (synthèse vocale + conversion) demande le worker GPU, "
@@ -441,7 +435,7 @@ async def step_finalize(pid: str, body: dict[str, Any]) -> str:
         except worker.WorkerError as exc:
             note = f" Filigrane non appliqué ({exc})."
     else:
-        note = " Mode démo : filigrane AudioSeal non appliqué (worker GPU requis)."
+        note = " Mode démo · filigrane non appliqué."
     if not applied:
         await asyncio.to_thread(shutil.copyfile, mixed, final)
     mixed.unlink(missing_ok=True)

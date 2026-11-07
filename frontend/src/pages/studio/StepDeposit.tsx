@@ -72,7 +72,7 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
   };
 
   return (
-    <StepCard number={1} title="Dépôt" subtitle="Déposez un refrain de 15 à 40 secondes. L'artiste reste maître de sa voix : rien ne se fait sans son accord." error={error}>
+    <StepCard number={1} title="Dépôt" subtitle="Un refrain de 15 à 40 s. L'artiste garde le contrôle." error={error}>
       <form onSubmit={submit} className="grid gap-5 lg:grid-cols-2">
         <div className="space-y-4">
           <div>
@@ -97,16 +97,26 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
               </select>
             </div>
           </div>
-          <p className="text-xs text-muted"><span className="font-semibold text-gold-soft">Yorùbá en priorité.</span> Déjà pris en charge : Fon, Swahili.</p>
+          <p className="text-xs font-semibold text-muted"><span className="text-gold-soft">Yorùbá en priorité</span> · Fon · Swahili</p>
           {src === tgt && <p className="text-sm text-gold-soft">La langue cible est identique à la langue chantée.</p>}
         </div>
         <div className="space-y-4">
+          <div className="overflow-hidden rounded-2xl shadow-[var(--raise-sm)] ring-1 ring-white/60">
+            <img
+              src="/photos/studio-session.jpg"
+              alt="Groupe de musiciens en studio"
+              width={800}
+              height={450}
+              loading="lazy"
+              className="h-28 w-full object-cover"
+            />
+          </div>
           <DropZone file={file} onFile={setFile} />
           <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${consent ? "border-mint/30 bg-mint/8" : "border-ink/10 bg-white/50"}`}>
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 shrink-0" required />
             <span className="text-sm">
-              <span className="font-semibold">Je certifie être l'artiste ou disposer de son accord pour utiliser sa voix</span>
-              <span className="mt-1 block text-muted">Obligatoire. Chaque version générée est une œuvre dérivée autorisée, signée par un filigrane.</span>
+              <span className="font-semibold">Je certifie être l'artiste ou avoir son accord.</span>
+              <span className="mt-1 block text-muted">Obligatoire · chaque version est signée.</span>
             </span>
           </label>
         </div>

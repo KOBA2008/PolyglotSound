@@ -21,20 +21,30 @@ export default function Verifier() {
   let verdict: { tone: string; icon: ReactNode; title: string; text: string } | null = null;
   if (res) {
     if (res.detected) {
-      verdict = { tone: "border-mint/30 bg-mint/8 text-mint", icon: <IconShield size={40} />, title: "Version autorisée PolyglotSound", text: "Ce fichier porte le filigrane AudioSeal d'une adaptation validée par l'artiste." };
+      verdict = { tone: "border-mint/30 bg-mint/8 text-mint", icon: <IconShield size={40} />, title: "Version autorisée", text: "Adaptation validée par l'artiste." };
     } else if (res.mode === "demo") {
-      verdict = { tone: "border-gold/30 bg-gold/8 text-gold-soft", icon: <IconAlert size={40} />, title: "Mode démo", text: "La détection AudioSeal demande le worker GPU. Aucun verdict fiable n'est possible pour l'instant." };
+      verdict = { tone: "border-gold/30 bg-gold/8 text-gold-soft", icon: <IconAlert size={40} />, title: "Mode démo", text: "Worker GPU requis pour AudioSeal." };
     } else {
-      verdict = { tone: "border-flame/30 bg-flame/8 text-flame-soft", icon: <IconX size={40} />, title: "Aucun filigrane détecté", text: "Ce fichier ne provient pas d'une adaptation PolyglotSound signée, ou il a été fortement altéré." };
+      verdict = { tone: "border-flame/30 bg-flame/8 text-flame-soft", icon: <IconX size={40} />, title: "Aucun filigrane détecté", text: "Pas de signature PolyglotSound." };
     }
   }
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 pt-4">
-      <header>
-        <p className="kicker">Traçabilité</p>
-        <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-5xl">Vérificateur de <span className="grad-text">filigrane</span></h1>
-        <p className="mt-3 text-lg text-muted">Une version circule ? Déposez-la : le filigrane inaudible AudioSeal dit si elle a été autorisée par l'artiste.</p>
+      <header className="flex items-center justify-between gap-6">
+        <div>
+          <p className="kicker">Traçabilité</p>
+          <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-5xl">Vérificateur de <span className="grad-text">filigrane</span></h1>
+          <p className="mt-3 text-lg text-muted">Déposez un fichier. AudioSeal dit s'il est autorisé.</p>
+        </div>
+        <img
+          src="/photos/verifier-voice.jpg"
+          alt="Chanteur au micro"
+          width={112}
+          height={112}
+          loading="lazy"
+          className="hidden h-28 w-28 shrink-0 rounded-2xl object-cover shadow-[var(--raise-sm)] ring-1 ring-white/60 sm:block"
+        />
       </header>
       <div className="glass space-y-4 p-5 md:p-7">
         <DropZone file={file} onFile={(f) => { setFile(f); setRes(null); }} label="Glissez le fichier à vérifier" />

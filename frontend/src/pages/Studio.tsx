@@ -17,13 +17,13 @@ import StepSing from "./studio/StepSing";
 import StepFinalize from "./studio/StepFinalize";
 
 const WIZARD: { key: "deposit" | StepName; title: string; short: string }[] = [
-  { key: "deposit", title: "Dépôt", short: "Morceau et consentement" },
-  { key: "separate", title: "Séparation", short: "Voix et instrumentale" },
-  { key: "transcribe", title: "Transcription", short: "Paroles et sens" },
-  { key: "align", title: "Grille musicale", short: "Syllabes et temps forts" },
-  { key: "translate", title: "Traduction", short: "Variantes qui se chantent" },
-  { key: "sing", title: "Chant", short: "La voix de l'artiste" },
-  { key: "finalize", title: "Final", short: "Mixage et filigrane" },
+  { key: "deposit", title: "Dépôt", short: "Morceau" },
+  { key: "separate", title: "Séparation", short: "Voix + instru" },
+  { key: "transcribe", title: "Transcription", short: "Paroles" },
+  { key: "align", title: "Grille musicale", short: "Syllabes" },
+  { key: "translate", title: "Traduction", short: "Variantes" },
+  { key: "sing", title: "Chant", short: "Voix artiste" },
+  { key: "finalize", title: "Final", short: "Mix + filigrane" },
 ];
 
 const POLL_MS = 1500;
@@ -149,7 +149,7 @@ export default function Studio() {
           ) : (
             <div className="mb-4 border-b border-ink/10 pb-4">
               <div className="font-display text-lg font-extrabold">Nouvelle adaptation</div>
-              <div className="text-sm text-muted">Le parcours de l'artiste en 7 étapes</div>
+              <div className="text-sm text-muted">7 étapes</div>
             </div>
           )}
           <ol className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0" aria-label="Étapes">
