@@ -5,6 +5,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+import shutil
+
 import numpy as np
 
 from app.config import settings
@@ -80,6 +82,115 @@ def mix(voice: Path, instrumental: Path, dst: Path,
     _run(_ff("-i", str(voice), "-i", str(instrumental), "-filter_complex", graph,
              "-map", "[out]", "-ac", "2", "-ar", str(settings.sample_rate),
              "-c:a", "pcm_s16le", str(dst)))
+    return dst
+
+
+def phrase_gate(voice: Path, reference: Path, dst: Path, thr: float = 0.08,
+                attack: float = 0.04, release: float = 0.18) -> Path:
+    """Coupe la voix adaptée là où la voix d'origine se tait : même phrasé, mêmes respirations."""
+    import wave
+    sr, hop = settings.sample_rate, settings.sample_rate // 100
+    v = read_pcm(voice, sr)
+    r = read_pcm(reference, sr)
+    n = len(v) // hop
+    if n == 0:
+        shutil.copyfile(voice, dst)
+        return dst
+    r = np.pad(r, (0, max(0, n * hop - len(r))))[: n * hop]
+    env = np.sqrt((r.reshape(n, hop) ** 2).mean(1))
+    on = (env > thr * (env.max() + 1e-9)).astype(np.float32)
+    # ouverture anticipée (attaque) et fermeture retardée (relâchement), puis lissage
+    a, b = max(1, int(attack * 100)), max(1, int(release * 100))
+    idx = np.flatnonzero(on)
+    mask = np.zeros(n, np.float32)
+    for i in idx:
+        mask[max(0, i - a): i + b] = 1.0
+    k = np.hanning(9).astype(np.float32); k /= k.sum()
+    mask = np.convolve(mask, k, mode="same")
+    gain = np.repeat(mask, hop)
+    out = v[: n * hop] * gain
+    pcm = (np.clip(out, -1, 1) * 32767).astype("<i2")
+    with wave.open(str(dst), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(pcm.tobytes())
+    return dst
+
+
+def _voiced_span(x: np.ndarray, sr: int, a: float, b: float, thr: float) -> tuple[float, float] | None:
+    """Début et fin du chant (secondes) dans [a, b], d'après l'énergie par tranches de 10 ms."""
+    hop = sr // 100
+    i, j = int(a * sr), min(len(x), int(b * sr))
+    n = (j - i) // hop
+    if n < 5:
+        return None
+    env = np.sqrt((x[i:i + n * hop].reshape(n, hop) ** 2).mean(1))
+    on = np.flatnonzero(env > thr)
+    if len(on) < 5:
+        return None
+    return a + on[0] / 100, a + (on[-1] + 1) / 100
+
+
+def _write_mono(x: np.ndarray, sr: int, dst: Path) -> None:
+    import wave
+    with wave.open(str(dst), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
+        w.writeframes((np.clip(x, -1, 1) * 32767).astype("<i2").tobytes())
+
+
+def phrase_align(voice: Path, reference: Path, lines: list[tuple[float, float]], dst: Path,
+                 thr: float = 0.08, max_ratio: float = 1.5) -> tuple[Path, list[dict]]:
+    """Recale chaque phrase de la voix adaptée sur la phrase d'origine : même attaque, même fin.
+    Étirement temporel Rubber Band (hauteur conservée), atempo en repli."""
+    sr = settings.sample_rate
+    v, r = read_pcm(voice, sr), read_pcm(reference, sr)
+    tv, tr = thr * float(np.abs(v).max() or 1) * 0.5, thr * float(np.abs(r).max() or 1) * 0.5
+    out = np.zeros_like(v)
+    report = []
+    tmp_in, tmp_out = dst.with_name("_seg_in.wav"), dst.with_name("_seg_out.wav")
+    for a, b in lines:
+        ro, vo = _voiced_span(r, sr, a, b, tr), _voiced_span(v, sr, a, b, tv)
+        seg_a, seg_b = int(a * sr), min(len(v), int(b * sr))
+        if not ro or not vo or vo[1] - vo[0] < 0.2:
+            out[seg_a:seg_b] += v[seg_a:seg_b]  # ligne laissée telle quelle
+            continue
+        seg = v[int(vo[0] * sr): int(vo[1] * sr)]
+        tempo = (vo[1] - vo[0]) / max(0.05, ro[1] - ro[0])
+        tempo = float(min(max(tempo, 1 / max_ratio), max_ratio))
+        _write_mono(seg, sr, tmp_in)
+        try:
+            _run(_ff("-i", str(tmp_in), "-af", f"rubberband=tempo={tempo:.4f}:pitchq=quality", str(tmp_out)))
+        except AudioError:
+            t = min(max(tempo, 0.5), 2.0)
+            _run(_ff("-i", str(tmp_in), "-af", f"atempo={t:.4f}", str(tmp_out)))
+        y = read_pcm(tmp_out, sr)
+        f = min(len(y) // 4, int(0.01 * sr))
+        if f > 0:
+            ramp = np.linspace(0, 1, f, dtype=y.dtype)
+            y[:f] *= ramp; y[-f:] *= ramp[::-1]
+        k = int(ro[0] * sr)
+        y = y[: max(0, len(out) - k)]
+        out[k:k + len(y)] += y
+        report.append({"line": [a, b], "orig": [round(ro[0], 2), round(ro[1], 2)],
+                       "before": [round(vo[0], 2), round(vo[1], 2)], "tempo": round(tempo, 3)})
+    tmp_in.unlink(missing_ok=True); tmp_out.unlink(missing_ok=True)
+    _write_mono(out, sr, dst)
+    return dst, report
+
+
+def mix_pro(voice: Path, instrumental: Path, dst: Path,
+            voice_vol: float = 1.0, instr_vol: float = 0.8) -> Path:
+    """Mixage « studio » : voix nettoyée (EQ, compression, légère réverb) et instrumentale
+    qui s'efface un peu sous la voix (sidechain), puis limiteur."""
+    sr = settings.sample_rate
+    graph = (f"[0:a]aresample={sr},highpass=f=90,"
+             "equalizer=f=300:t=q:w=1:g=-3,equalizer=f=3500:t=q:w=1:g=3,"
+             "acompressor=threshold=0.125:ratio=3:attack=10:release=120:makeup=2,"
+             "aecho=0.8:0.7:45|90:0.18|0.1,"
+             f"volume={voice_vol},asplit=2[v][sc];"
+             f"[1:a]aresample={sr},volume={instr_vol}[i];"
+             "[i][sc]sidechaincompress=threshold=0.05:ratio=3:attack=20:release=250[duck];"
+             "[v][duck]amix=inputs=2:duration=longest:normalize=0,alimiter=limit=0.95[out]")
+    _run(_ff("-i", str(voice), "-i", str(instrumental), "-filter_complex", graph,
+             "-map", "[out]", "-ac", "2", "-ar", str(sr), "-c:a", "pcm_s16le", str(dst)))
     return dst
 
 

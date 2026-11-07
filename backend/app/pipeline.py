@@ -396,7 +396,20 @@ async def step_finalize(pid: str, body: dict[str, Any]) -> str:
     instr_vol = float(body.get("instrumental_volume", 0.8))
     mixed, final, mp3 = _path(pid, "mix.wav"), _path(pid, "final.wav"), _path(pid, "final.mp3")
     _set_step(pid, "finalize", progress=20, message="Mixage voix + instrumentale...")
-    await asyncio.to_thread(audio.mix, voice, instr, mixed, voice_vol, instr_vol)
+    if body.get("enhance", True):
+        ref = _file_of(p, "vocals")
+        if ref is not None and voice != ref:
+            _set_step(pid, "finalize", progress=5, message="Recalage du tempo phrase par phrase (Rubber Band)...")
+            spans = [(l.start, l.end) for l in p.lines if l.end > l.start]
+            if spans:
+                voice, _ = await asyncio.to_thread(audio.phrase_align, voice, ref, spans, _path(pid, "voice_aligned.wav"))
+            _set_step(pid, "finalize", progress=10, message="Calage du phrasé sur la voix d'origine...")
+            gated = _path(pid, "voice_gated.wav")
+            voice = await asyncio.to_thread(audio.phrase_gate, voice, ref, gated)
+        _set_step(pid, "finalize", progress=20, message="Mixage studio (EQ, compression, réverb, sidechain)...")
+        await asyncio.to_thread(audio.mix_pro, voice, instr, mixed, voice_vol, instr_vol)
+    else:
+        await asyncio.to_thread(audio.mix, voice, instr, mixed, voice_vol, instr_vol)
 
     wm_msg = f"PS:{pid}"
     applied = False
