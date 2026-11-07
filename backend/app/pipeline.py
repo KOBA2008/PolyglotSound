@@ -100,6 +100,31 @@ def _lyrics_context(p: Project) -> str:
 
 # ---------------------------------------------------------------- étapes
 
+async def _local_demucs(pid: str, orig: Path, vocals: Path, instr: Path) -> bool:
+    """Repli sans GPU : Demucs (htdemucs) sur CPU, dans un environnement Python séparé
+    (DEMUCS_PYTHON), pour que le backend n'importe jamais torch. False si échec."""
+    _set_step(pid, "separate", progress=20, message="Séparation Demucs sur le processeur (1 à 2 min)...")
+    out = orig.parent / "demucs_out"
+    cmd = [os.environ["DEMUCS_PYTHON"], "-m", "demucs", "--two-stems=vocals", "-n", "htdemucs",
+           "-o", str(out), str(orig)]
+    try:
+        import subprocess
+        proc = await asyncio.to_thread(subprocess.run, cmd, capture_output=True, text=True,
+                                       timeout=float(os.getenv("DEMUCS_TIMEOUT", "600")))
+        stems = out / "htdemucs" / orig.stem
+        if proc.returncode != 0 or not (stems / "vocals.wav").exists():
+            log.warning("Demucs local en échec (%s) : %s", proc.returncode, proc.stderr[-800:])
+            return False
+        await asyncio.to_thread(audio.to_mono, stems / "vocals.wav", vocals)
+        await asyncio.to_thread(audio.to_wav, stems / "no_vocals.wav", instr, 2)
+        return True
+    except Exception as exc:  # noqa: BLE001 : le repli ne doit jamais casser l'étape
+        log.warning("Demucs local en échec : %s", exc)
+        return False
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+
+
 async def step_separate(pid: str, body: dict[str, Any]) -> str:
     p = store.load(pid)
     orig = _file_of(p, "original")
@@ -112,6 +137,8 @@ async def step_separate(pid: str, body: dict[str, Any]) -> str:
         await asyncio.to_thread(audio.write_wav_bytes, v_bytes, vocals, 1)
         await asyncio.to_thread(audio.write_wav_bytes, i_bytes, instr, 2)
         msg = "Voix et instrumentale séparées (Demucs)."
+    elif os.getenv("DEMUCS_PYTHON") and await _local_demucs(pid, orig, vocals, instr):
+        msg = "Voix et instrumentale séparées (Demucs de Meta, sur le processeur local)."
     else:
         _set_step(pid, "separate", progress=30, message="Mode démo : séparation simplifiée par ffmpeg...")
         await asyncio.to_thread(audio.to_mono, orig, vocals)
