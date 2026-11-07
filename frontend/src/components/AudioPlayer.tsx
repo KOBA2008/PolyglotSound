@@ -120,9 +120,9 @@ export default function AudioPlayer({ src, label, accent = "gold", download, ref
               if (a) a.currentTime = Number(e.target.value);
             }}
             className="mt-1 h-1.5 w-full cursor-pointer"
-            style={{ background: `linear-gradient(90deg, #007a56 ${pct}%, rgba(38,48,62,.12) ${pct}%)` }}
+            style={{ background: `linear-gradient(90deg, #00b877 ${pct}%, rgba(11,15,26,.12) ${pct}%)` }}
           />
-          {err && <div className="mt-1 text-xs text-flame">Fichier audio illisible ou introuvable.</div>}
+          {err && <div className="mt-1 text-xs text-flame-soft">Fichier audio illisible ou introuvable.</div>}
         </div>
         {download && (
           <a href={src} download className="btn btn-ghost btn-sm" aria-label={`Télécharger ${label}`}>

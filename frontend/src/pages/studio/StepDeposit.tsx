@@ -97,8 +97,8 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
               </select>
             </div>
           </div>
-          <p className="text-xs text-muted"><span className="font-semibold text-gold">Yorùbá en priorité.</span> Déjà pris en charge : Fon, Swahili.</p>
-          {src === tgt && <p className="text-sm text-gold">La langue cible est identique à la langue chantée.</p>}
+          <p className="text-xs text-muted"><span className="font-semibold text-gold-soft">Yorùbá en priorité.</span> Déjà pris en charge : Fon, Swahili.</p>
+          {src === tgt && <p className="text-sm text-gold-soft">La langue cible est identique à la langue chantée.</p>}
         </div>
         <div className="space-y-4">
           <DropZone file={file} onFile={setFile} />

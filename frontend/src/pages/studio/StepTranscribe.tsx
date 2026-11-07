@@ -117,7 +117,7 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
           <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || !dirty}>
             {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les corrections
           </button>
-          {dirty && <span className="text-sm text-gold">Modifications non enregistrées</span>}
+          {dirty && <span className="text-sm text-gold-soft">Modifications non enregistrées</span>}
           {saved && !dirty && <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Enregistré</span>}
           {empty > 0 && <span className="text-sm text-muted">{empty} ligne{empty > 1 ? "s" : ""} sans paroles</span>}
           {saved && !dirty && (
@@ -136,7 +136,7 @@ function SyllableCounter({ text, lang }: { text: string; lang: string }) {
   if (!text.trim()) return null;
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
-      <span className="rounded-full border border-brand/25 bg-brand/8 px-2 py-0.5 font-mono text-xs font-bold text-brand-soft">
+      <span className="rounded-[9px] px-2 py-1 font-mono text-xs font-bold text-brand-soft shadow-[var(--inset-sm)]">
         {loading && count === null ? "..." : error ? "?" : count} syllabe{count === 1 ? "" : "s"}
       </span>
       {loading && <IconLoader size={12} className="text-muted" />}

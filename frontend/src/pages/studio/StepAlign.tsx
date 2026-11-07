@@ -98,8 +98,8 @@ export default function StepAlign({ project, run, busy, errors, fileUrl }: StepP
                     <span className="font-display text-sm font-extrabold text-brand-soft">Ligne {l.index + 1}</span>
                     <span className="font-display text-lg font-bold">{l.text || <em className="text-muted">sans paroles</em>}</span>
                     <span className="ml-auto flex items-center gap-2 text-xs text-muted">
-                      <span className="rounded-full border border-ink/5 bg-white/60 px-2 py-0.5 font-mono">{l.n_syllables} syllabes</span>
-                      <span className="rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 font-mono text-gold-soft">{l.stress_positions?.length ?? 0} temps forts</span>
+                      <span className="rounded-[9px] px-2 py-1 font-mono shadow-[var(--inset-sm)]">{l.n_syllables} syllabes</span>
+                      <span className="rounded-[9px] px-2 py-1 font-mono text-gold-soft shadow-[var(--inset-sm)]">{l.stress_positions?.length ?? 0} temps forts</span>
                       <span className="font-mono">{fmtSec(l.start)} à {fmtSec(l.end)}</span>
                     </span>
                   </div>

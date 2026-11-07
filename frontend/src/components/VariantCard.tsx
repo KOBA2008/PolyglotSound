@@ -6,10 +6,10 @@ export function SyllableCountBadge({ count, target }: { count: number; target: n
   const ok = count === target;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold ${ok ? "border-mint/30 bg-mint/10 text-mint" : "border-flame/30 bg-flame/10 text-flame-soft"}`}
+      className={`inline-flex items-center gap-1 rounded-[9px] px-2.5 py-1 font-mono text-xs font-bold shadow-[var(--inset-sm)] ${ok ? "text-mint" : "text-flame-soft"}`}
       aria-label={`${count} syllabes sur ${target}${ok ? ", compte exact" : ", compte incorrect"}`}
     >
-      {count}/{target}{ok ? " syllabes ✓" : ""}
+      {count}/{target} syllabes
     </span>
   );
 }
@@ -37,7 +37,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
       type={onSelect ? "button" : undefined}
       onClick={onSelect}
       aria-pressed={onSelect ? !!selected : undefined}
-      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:bg-white/60" : ""} ${selected ? "!border-brand ring-2 ring-brand/30 shadow-[0_12px_26px_-16px_rgba(0,122,86,.55)]" : ""}`}
+      className={`glass fade-in block w-full p-4 text-left transition ${onSelect ? "cursor-pointer hover:brightness-[1.02]" : ""} ${selected ? "!border-brand-soft ring-2 ring-brand-soft/35 shadow-[0_12px_26px_-16px_rgba(6,106,74,.55)]" : ""}`}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -46,7 +46,7 @@ export default function VariantCard({ variant, target, refCells, t0, t1, selecte
         <div className="flex items-center gap-2">
           <SyllableCountBadge count={count} target={target} />
           {selected && (
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white"><IconCheck size={14} /></span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-soft text-white"><IconCheck size={14} /></span>
           )}
         </div>
       </div>

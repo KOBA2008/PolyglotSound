@@ -64,14 +64,14 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
       <div className="flex flex-wrap items-center gap-3">
         {!rec ? (
           <button type="button" className="btn btn-ghost" onClick={() => void start()}>
-            <IconMic size={16} className="text-gold" /> Enregistrer au micro
+            <IconMic size={16} className="text-gold-soft" /> Enregistrer au micro
           </button>
         ) : (
-          <button type="button" className="btn bg-flame text-white hover:bg-flame/90" onClick={stop}>
+          <button type="button" className="btn bg-flame-soft text-white hover:bg-flame-soft/90" onClick={stop}>
             <IconStop size={14} /> Arrêter ({fmtTime(elapsed)})
           </button>
         )}
-        {rec && <span className="flex items-center gap-2 text-sm text-flame"><span className="h-2.5 w-2.5 animate-pulse rounded-full bg-flame" /> Enregistrement</span>}
+        {rec && <span className="flex items-center gap-2 text-sm text-flame-soft"><span className="h-2.5 w-2.5 animate-pulse rounded-full bg-flame" /> Enregistrement</span>}
       </div>
       {backing && (
         <label className="flex items-center gap-2 text-sm text-muted">
@@ -79,7 +79,7 @@ export default function Recorder({ backing, onDone }: { backing?: string | null;
           Jouer l'instrumentale pendant l'enregistrement (casque conseillé)
         </label>
       )}
-      {error && <p role="alert" className="text-sm text-flame">{error}</p>}
+      {error && <p role="alert" className="text-sm text-flame-soft">{error}</p>}
     </div>
   );
 }

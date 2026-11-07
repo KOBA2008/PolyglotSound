@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { StepState } from "../types";
 import StatusBadge from "./StatusBadge";
-import { IconAlert, IconRefresh, IconSparkle } from "./icons";
+import { IconAlert, IconPlay, IconRefresh } from "./icons";
 
 interface Props {
   number: number;
@@ -37,7 +37,7 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
           {extraActions}
           {onRun && (
             <button type="button" className={done || failed ? "btn btn-ghost" : "btn btn-primary"} onClick={onRun} disabled={runDisabled || running || busy}>
-              {done || failed ? <IconRefresh size={16} /> : <IconSparkle size={16} />}
+              {done || failed ? <IconRefresh size={16} /> : <IconPlay size={16} />}
               {running ? "En cours..." : done || failed ? "Relancer" : runLabel}
             </button>
           )}
@@ -51,7 +51,7 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
               className="pulse-bar h-full rounded-full transition-all"
               style={{
                 width: `${Math.max(state!.progress || 0, 8)}%`,
-                backgroundImage: "linear-gradient(90deg,#007a56,#a86f00,#cf2e22,#007a56)",
+                backgroundImage: "linear-gradient(90deg,#00d084,#ffd700,#ff1e1e,#00d084)",
               }}
             />
           </div>
@@ -65,7 +65,7 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
           <div>
             <div className="font-semibold">{failed ? "L'étape a échoué" : "Erreur"}</div>
             <div>{error || state?.message || "Erreur inconnue."}</div>
-            {failed && onRun && <div className="mt-1 text-flame">Vous pouvez corriger puis relancer l'étape.</div>}
+            {failed && onRun && <div className="mt-1 text-flame-soft">Vous pouvez corriger puis relancer l'étape.</div>}
           </div>
         </div>
       )}

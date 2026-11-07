@@ -5,7 +5,7 @@ import StepCard from "../../components/StepCard";
 import AudioPlayer from "../../components/AudioPlayer";
 import DropZone from "../../components/DropZone";
 import Recorder from "../../components/Recorder";
-import { IconLoader, IconMic, IconSparkle, IconUpload, IconAlert } from "../../components/icons";
+import { IconLoader, IconMic, IconMusic, IconUpload, IconAlert } from "../../components/icons";
 
 type SingMode = "studio" | "auto";
 
@@ -35,7 +35,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
 
   const modes: { k: SingMode; title: string; text: string; icon: typeof IconMic }[] = [
     { k: "studio", title: "Mode Studio", text: "Quelqu'un chante la version traduite (voix guide). L'IA lui donne le timbre de l'artiste. Le meilleur rendu.", icon: IconMic },
-    { k: "auto", title: "Mode Auto", text: "Synthèse vocale calée sur la grille et la mélodie d'origine, puis conversion vers la voix de l'artiste. Aucun chanteur requis.", icon: IconSparkle },
+    { k: "auto", title: "Mode Auto", text: "Synthèse vocale calée sur la grille et la mélodie d'origine, puis conversion vers la voix de l'artiste. Aucun chanteur requis.", icon: IconMusic },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
       runDisabled={mode === "studio" && !hasGuide}
     >
       {chosen < project.lines.length && project.lines.length > 0 && (
-        <p className="mb-4 text-sm text-gold">{project.lines.length - chosen} ligne(s) sans traduction choisie : enregistrez vos choix à l'étape 5.</p>
+        <p className="mb-4 text-sm text-gold-soft">{project.lines.length - chosen} ligne(s) sans traduction choisie : enregistrez vos choix à l'étape 5.</p>
       )}
       <div className="grid gap-3 md:grid-cols-2" role="radiogroup" aria-label="Mode de chant">
         {modes.map(({ k, title, text, icon: Icon }) => (
@@ -61,7 +61,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             role="radio"
             aria-checked={mode === k}
             onClick={() => setMode(k)}
-            className={`glass flex items-start gap-3 p-4 text-left transition ${mode === k ? "!border-brand ring-2 ring-brand/25" : "hover:bg-white/60"}`}
+            className={`glass flex items-start gap-3 p-4 text-left transition ${mode === k ? "!border-brand-soft ring-2 ring-brand-soft/25" : "hover:brightness-[1.02]"}`}
           >
             <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${mode === k ? "grad" : "neo-inset"}`}><Icon size={18} /></span>
             <span>
@@ -106,7 +106,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             )}
             <LyricsPrompt lines={project.lines.map((l) => l.chosen || "")} />
           </div>
-          {upErr && <p role="alert" className="text-sm text-flame lg:col-span-2">{upErr}</p>}
+          {upErr && <p role="alert" className="text-sm text-flame-soft lg:col-span-2">{upErr}</p>}
           <div className="lg:col-span-2">
             <AudioPlayer src={fileUrl(project.files.guide)} label={hasGuide ? "Voix guide enregistrée" : "Voix guide (à déposer)"} accent="flame" />
           </div>

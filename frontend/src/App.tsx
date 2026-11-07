@@ -15,25 +15,17 @@ export interface LayoutCtx { health: Health | null }
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-3" aria-label="PolyglotSound, accueil">
-      <span className="neo-chip flex h-11 w-11 items-center justify-center rounded-2xl">
-        <svg width="24" height="24" viewBox="0 0 28 28" aria-hidden="true">
-          <defs>
-            <linearGradient id="lg" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0" stopColor="#007a56" />
-              <stop offset=".65" stopColor="#00b981" />
-              <stop offset="1" stopColor="#a86f00" />
-            </linearGradient>
-          </defs>
-          <g fill="url(#lg)">
-            <rect x="3" y="11" width="3.4" height="6" rx="1.7" />
-            <rect x="9" y="7" width="3.4" height="14" rx="1.7" />
-            <rect x="15" y="3" width="3.4" height="22" rx="1.7" />
-            <rect x="21" y="9" width="3.4" height="10" rx="1.7" />
-          </g>
-          <circle cx="24.5" cy="4.5" r="2" fill="#cf2e22" />
-        </svg>
+      <img
+        src="/logopolyglot.png"
+        alt=""
+        width={48}
+        height={48}
+        className="h-12 w-12 rounded-[14px] object-cover shadow-[var(--raise-sm)] ring-1 ring-white/50"
+      />
+      <span className="flex flex-col leading-none">
+        <span className="font-display text-base font-extrabold tracking-tight">PolyglotSound</span>
+        <span className="mt-1 font-serif text-sm italic text-brand-soft">Studio d'adaptation</span>
       </span>
-      <span className="font-display text-lg font-extrabold tracking-tight">Polyglot<span className="grad-text">Sound</span></span>
     </Link>
   );
 }
@@ -43,7 +35,7 @@ function Layout() {
   const [down, setDown] = useState(false);
   useEffect(() => onBackendStatus(setDown), []);
   const nav = ({ isActive }: { isActive: boolean }) =>
-    `rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${isActive
+    `rounded-[11px] px-3.5 py-2 text-sm font-semibold transition ${isActive
       ? "neo-chip text-brand-soft"
       : "text-muted hover:text-ink"}`;
 
@@ -52,13 +44,13 @@ function Layout() {
       <div className="bg-halos" aria-hidden="true"><span /></div>
       <a href="#contenu" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 btn btn-primary">Aller au contenu</a>
       {down && (
-        <div role="alert" className="sticky top-0 z-40 flex items-center justify-center gap-2 bg-flame px-4 py-2 text-sm font-semibold text-white">
+        <div role="alert" className="sticky top-0 z-40 flex items-center justify-center gap-2 bg-flame-soft px-4 py-2 text-sm font-semibold text-white">
           <IconAlert size={16} /> Backend injoignable, lancez <code className="rounded bg-black/15 px-1.5 py-0.5">backend/run.sh</code>
         </div>
       )}
       <header className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4 px-5 py-5 md:px-8">
         <Logo />
-        <nav aria-label="Navigation principale" className="neo-inset flex flex-wrap items-center gap-1 rounded-full p-1">
+        <nav aria-label="Navigation principale" className="neo-inset flex flex-wrap items-center gap-1 rounded-2xl p-1.5">
           <NavLink to="/" end className={nav}>Accueil</NavLink>
           <NavLink to="/projet/nouveau" className={nav}>Studio</NavLink>
           <NavLink to="/atelier" className={nav}>Atelier jury</NavLink>

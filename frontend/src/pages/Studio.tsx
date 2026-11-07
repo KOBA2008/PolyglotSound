@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { api, errMsg } from "../api";
 import type { Project, StepName, StepStatus } from "../types";
 import { STEP_ORDER, langLabel } from "../types";
 import { ModeBadge } from "../components/StatusBadge";
+
+const StudioWave3D = lazy(() => import("../components/StudioWave3D"));
 import { IconArrowLeft, IconArrowRight, IconCheck, IconLoader, IconAlert } from "../components/icons";
 import type { StepProps } from "./studio/shared";
 import StepDeposit from "./studio/StepDeposit";
@@ -114,7 +116,7 @@ export default function Studio() {
   if (!isNew && loadError) {
     return (
       <div className="glass mx-auto mt-10 max-w-xl p-8 text-center" role="alert">
-        <IconAlert size={28} className="mx-auto text-flame" />
+        <IconAlert size={28} className="mx-auto text-flame-soft" />
         <h1 className="mt-3 font-display text-2xl font-extrabold">Projet introuvable</h1>
         <p className="mt-2 text-muted">{loadError}</p>
         <Link to="/" className="btn btn-primary mt-5">Retour à l'accueil</Link>
@@ -132,12 +134,15 @@ export default function Studio() {
     <div className="grid gap-6 pt-2 lg:grid-cols-[280px_1fr] xl:gap-8">
       <aside className="lg:sticky lg:top-4 lg:self-start">
         <div className="glass p-4">
+          <Suspense fallback={<div className="neo-inset mb-4 h-[84px] rounded-2xl" aria-hidden="true" />}>
+            <StudioWave3D height={84} className="mb-4" />
+          </Suspense>
           {project ? (
             <div className="mb-4 border-b border-ink/10 pb-4">
               <div className="truncate font-display text-lg font-extrabold">{project.title}</div>
               <div className="truncate text-sm text-muted">{project.artist}</div>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="rounded-full border border-ink/10 bg-white/70 px-2 py-0.5">{langLabel(project.source_lang)} → {langLabel(project.target_lang)}</span>
+                <span className="rounded-[9px] px-2 py-1 shadow-[var(--inset-sm)]">{langLabel(project.source_lang)} → {langLabel(project.target_lang)}</span>
                 <ModeBadge mode={project.mode} compact />
               </div>
             </div>
@@ -159,10 +164,10 @@ export default function Studio() {
                     disabled={disabled}
                     onClick={() => goTo(i)}
                     aria-current={current ? "step" : undefined}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "neo-chip ring-1 ring-brand/20" : "hover:bg-white/60"}`}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${current ? "neo-chip ring-1 ring-brand-soft/25" : "hover:brightness-[1.02]"}`}
                   >
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                      st === "done" ? "bg-mint text-white" : st === "running" ? "bg-teal/15 text-teal" : st === "error" ? "bg-flame text-white" : current ? "grad" : "neo-inset text-muted"}`}>
+                      st === "done" ? "bg-mint text-white" : st === "running" ? "bg-teal/15 text-teal" : st === "error" ? "bg-flame-soft text-white" : current ? "grad" : "neo-inset text-muted"}`}>
                       {st === "done" ? <IconCheck size={15} /> : st === "running" ? <IconLoader size={15} /> : st === "error" ? "!" : i + 1}
                     </span>
                     <span className="min-w-0">

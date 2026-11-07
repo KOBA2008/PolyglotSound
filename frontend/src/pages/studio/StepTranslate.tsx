@@ -74,7 +74,7 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
       {hasVariants && (
         <>
           <div className="mb-5 flex flex-wrap items-center gap-3 text-sm">
-            <span className="rounded-full border border-mint/40 bg-mint/10 px-3 py-1 font-semibold text-mint">{okCount}/{lines.length} lignes au bon nombre de syllabes</span>
+            <span className="rounded-[9px] px-3 py-1 font-semibold text-mint shadow-[var(--inset-sm)]">{okCount}/{lines.length} lignes au bon nombre de syllabes</span>
           </div>
           <ol className="space-y-6">
             {lines.map((l) => (
@@ -85,7 +85,7 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
             <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || (!dirty && saved)}>
               {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer les choix
             </button>
-            {dirty && <span className="text-sm text-gold">Choix non enregistrés</span>}
+            {dirty && <span className="text-sm text-gold-soft">Choix non enregistrés</span>}
             {saved && !dirty && (
               <>
                 <span className="flex items-center gap-1 text-sm text-mint"><IconCheck size={14} /> Choix enregistrés</span>
@@ -126,12 +126,12 @@ function LineTranslate({ line, lang, choice, onChoose }: { line: Line; lang: Tar
         <div className="flex flex-col gap-3 md:flex-row">
           <input
             id={`c-${line.index}`}
-            className={`field ${!isVariant && choice ? "!border-gold" : ""}`}
+            className={`field ${!isVariant && choice ? "!border-gold-soft" : ""}`}
             value={custom}
             placeholder="Réécrivez la ligne : le compte de syllabes se met à jour en direct"
             onChange={(e) => { setCustom(e.target.value); onChoose(e.target.value); }}
           />
-          {custom && !isVariant && <span className="self-center whitespace-nowrap text-xs font-semibold text-gold">Version choisie</span>}
+          {custom && !isVariant && <span className="self-center whitespace-nowrap text-xs font-semibold text-gold-soft">Version choisie</span>}
           {custom && isVariant && (
             <button type="button" className="btn btn-ghost btn-sm whitespace-nowrap" onClick={() => onChoose(custom)}>Choisir ma version</button>
           )}

@@ -60,7 +60,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
         >
           {playing ? <IconPause size={24} /> : <IconPlay size={24} />}
         </button>
-        <div className="neo-inset inline-flex rounded-full p-1" role="radiogroup" aria-label="Version écoutée">
+        <div className="neo-inset inline-flex rounded-[13px] p-1" role="radiogroup" aria-label="Version écoutée">
           {(["A", "B"] as const).map((s) => (
             <button
               key={s}
@@ -69,7 +69,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
               aria-checked={side === s}
               disabled={disabled}
               onClick={() => switchTo(s)}
-              className={`rounded-full px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-brand text-white" : "grad") : "text-muted hover:text-ink"}`}
+              className={`rounded-[10px] px-5 py-2.5 font-display text-sm font-extrabold transition ${side === s ? (s === "A" ? "bg-brand-soft text-white" : "grad") : "text-muted hover:text-ink"}`}
             >
               {s === "A" ? labelA : labelB}
             </button>
@@ -87,7 +87,7 @@ export default function ABPlayer({ a, b, labelA = "Original", labelB = "Polyglot
         onChange={(e) => seek(Number(e.target.value))}
         aria-label="Position de lecture"
         className="mt-4 h-2 w-full"
-        style={{ background: `linear-gradient(90deg, #007a56 ${pct}%, rgba(38,48,62,.12) ${pct}%)` }}
+        style={{ background: `linear-gradient(90deg, #00b877 ${pct}%, rgba(11,15,26,.12) ${pct}%)` }}
       />
       {disabled && <p className="mt-3 text-sm text-muted">La comparaison sera disponible après la finalisation.</p>}
       {!disabled && <p className="mt-3 text-sm text-muted">Basculez pendant la lecture : les deux versions restent calées au même instant.</p>}

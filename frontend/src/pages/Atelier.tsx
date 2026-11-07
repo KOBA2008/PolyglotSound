@@ -8,13 +8,7 @@ import Wave from "../components/Wave";
 import YorubaKeyboard from "../components/YorubaKeyboard";
 import { insertAtCursor } from "../components/insertAtCursor";
 import { useSyllables } from "../components/useSyllables";
-import { IconLoader, IconSparkle } from "../components/icons";
-
-const EXAMPLES = [
-  { meaning: "L'amour est une rivière qui ne tarit jamais", n: 8, stress: [0, 3, 6] },
-  { meaning: "Ma mère m'a appris à me lever avant le soleil", n: 10, stress: [1, 4, 8] },
-  { meaning: "Danse avec nous, la fête ne fait que commencer", n: 9, stress: [0, 2, 5, 8] },
-];
+import { IconArrowRight, IconLoader } from "../components/icons";
 
 export default function Atelier() {
   const [meaning, setMeaning] = useState("");
@@ -63,7 +57,7 @@ export default function Atelier() {
           <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">Proposez une <span className="grad-text">phrase</span></h1>
           <p className="mt-3 max-w-2xl text-lg text-muted">Donnez un sens, un nombre de syllabes et des temps forts. PolyglotSound écrit des paroles qui tiennent dans la mesure. La phrase originale s'écrit en <strong className="font-semibold text-gold-soft">yorùbá</strong>.</p>
           <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">
-            <span className="rounded-full border border-gold/25 bg-gold/8 px-2.5 py-0.5 text-xs font-semibold text-gold-soft">Yorùbá en priorité</span>
+            <span className="rounded-[9px] px-2.5 py-1 text-xs font-semibold text-gold-soft shadow-[var(--inset-sm)]">Yorùbá en priorité</span>
             Déjà pris en charge : Fon, Swahili
           </p>
         </div>
@@ -81,7 +75,7 @@ export default function Atelier() {
             <input ref={origRef} id="orig" className="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Texte chanté d'origine" />
             <YorubaKeyboard onInsert={insertYoruba} label="Clavier yorùbá de la phrase originale" />
             <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-live="polite">
-              <span className="rounded-full border border-gold/25 bg-gold/8 px-2.5 py-0.5 font-mono text-xs font-bold text-gold-soft">
+              <span className="rounded-[9px] px-2.5 py-1 font-mono text-xs font-bold text-gold-soft shadow-[var(--inset-sm)]">
                 {yor.loading && yor.count === null ? "…" : yor.error ? "?" : yorCount} syllabe{yorCount > 1 ? "s" : ""}
               </span>
               <span className="text-[11px] text-muted">{yor.loading ? "comptage en cours" : "en yorùbá · mise à jour 300 ms"}</span>
@@ -91,23 +85,15 @@ export default function Atelier() {
               {yor.error && <span className="text-xs text-flame-soft">compteur indisponible</span>}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="self-center text-xs text-muted">Exemples :</span>
-            {EXAMPLES.map((ex) => (
-              <button key={ex.meaning} type="button" className="btn btn-ghost btn-sm" onClick={() => { setMeaning(ex.meaning); setN(ex.n); setStress(ex.stress); }}>
-                {ex.meaning.split(" ").slice(0, 4).join(" ")}...
-              </button>
-            ))}
-          </div>
         </div>
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
             <div>
               <span className="label" id="lang-l">Langue cible</span>
-              <div className="inline-flex rounded-full neo-inset p-1" role="radiogroup" aria-labelledby="lang-l">
+              <div className="inline-flex rounded-[13px] neo-inset p-1" role="radiogroup" aria-labelledby="lang-l">
                 {TARGET_LANGS.map((l) => (
                   <button key={l.code} type="button" role="radio" aria-checked={lang === l.code} onClick={() => setLang(l.code)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${lang === l.code ? "grad" : "text-muted hover:text-ink"}`}>
+                    className={`rounded-[10px] px-4 py-1.5 text-sm font-semibold transition ${lang === l.code ? "grad" : "text-muted hover:text-ink"}`}>
                     {l.label}
                   </button>
                 ))}
@@ -124,7 +110,7 @@ export default function Atelier() {
             <p className="mt-2 text-xs text-muted">{stress.length} temps fort{stress.length > 1 ? "s" : ""} · positions {stress.length ? stress.map((i) => i + 1).join(", ") : "aucune"}</p>
           </div>
           <button type="submit" className="btn btn-primary w-full py-3 text-base" disabled={loading || !meaning.trim()}>
-            {loading ? <IconLoader size={18} /> : <IconSparkle size={18} />} {loading ? "Écriture des variantes..." : "Adapter la phrase"}
+            {loading ? <IconLoader size={18} /> : <IconArrowRight size={18} />} {loading ? "Écriture des variantes..." : "Adapter la phrase"}
           </button>
         </div>
       </form>
