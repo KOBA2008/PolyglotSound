@@ -1,9 +1,11 @@
 """Client LLM minimal (httpx async, sans SDK) pour le moteur lyrics.
 
 Variables d'environnement :
-  LLM_PROVIDER   groq | anthropic | ollama | rule | auto (défaut auto)
-                 auto = groq si GROQ_API_KEY, sinon anthropic si ANTHROPIC_API_KEY, sinon rule
-  GROQ_API_KEY, GROQ_MODEL (défaut llama-3.3-70b-versatile)
+  LLM_PROVIDER   meta | groq | anthropic | ollama | rule | auto (défaut auto)
+                 auto = meta si META_API_KEY, sinon groq si GROQ_API_KEY, sinon anthropic, sinon rule
+                 (si meta échoue et qu'une clé Groq existe, Groq prend le relais)
+  META_API_KEY, META_BASE_URL (défaut https://api.meta.ai/v1), META_MODEL (défaut muse-spark-1.3)
+  GROQ_API_KEY, GROQ_MODEL (défaut openai/gpt-oss-120b)
   ANTHROPIC_API_KEY, ANTHROPIC_MODEL (défaut claude-opus-5-5)
   OLLAMA_URL (défaut http://localhost:11434), OLLAMA_MODEL (défaut llama3.2)
   LLM_TIMEOUT (secondes, défaut 45)
@@ -17,9 +19,14 @@ import json
 import os
 from typing import Any
 
+import logging
+
 import httpx
 
+log = logging.getLogger("polyglotsound.lyrics")
+
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+META_BASE_URL = "https://api.meta.ai/v1"
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_VERSION = "2026-10-21"
 ANTHROPIC_FALLBACK_BETA = "server-side-fallback-2026-07-01"
@@ -27,6 +34,7 @@ ANTHROPIC_FALLBACK_BETA = "server-side-fallback-2026-07-01"
 _DEFAULT_MODELS = {
     # Groq a retiré ses Llama de chat fin 2026 : gpt-oss-120b est le meilleur modèle ouvert disponible.
     "groq": "openai/gpt-oss-120b",
+    "meta": "muse-spark-1.3",
     "anthropic": "claude-opus-5-5",
     "ollama": "llama3.2",
     "rule": None,
@@ -39,8 +47,10 @@ class LLMError(RuntimeError):
 
 def resolve_provider() -> str:
     p = (os.getenv("LLM_PROVIDER") or "auto").strip().lower()
-    if p in ("groq", "anthropic", "ollama", "rule"):
+    if p in ("meta", "groq", "anthropic", "ollama", "rule"):
         return p
+    if os.getenv("META_API_KEY"):
+        return "meta"
     if os.getenv("GROQ_API_KEY"):
         return "groq"
     if os.getenv("ANTHROPIC_API_KEY"):
@@ -49,7 +59,7 @@ def resolve_provider() -> str:
 
 
 def _model_for(provider: str) -> str | None:
-    env = {"groq": "GROQ_MODEL", "anthropic": "ANTHROPIC_MODEL", "ollama": "OLLAMA_MODEL"}.get(provider)
+    env = {"meta": "META_MODEL", "groq": "GROQ_MODEL", "anthropic": "ANTHROPIC_MODEL", "ollama": "OLLAMA_MODEL"}.get(provider)
     return (os.getenv(env) if env else None) or _DEFAULT_MODELS.get(provider)
 
 
@@ -113,6 +123,27 @@ async def _groq(client: httpx.AsyncClient, system: str, user: str, model: str, t
     return r.json()["choices"][0]["message"]["content"]
 
 
+async def _meta(client: httpx.AsyncClient, system: str, user: str, model: str, temperature: float) -> str:
+    """API Meta Model (compatible OpenAI). Muse Spark raisonne avant de répondre : effort bas et marge de jetons."""
+    key = os.getenv("META_API_KEY")
+    if not key:
+        raise LLMError("META_API_KEY manquant")
+    base = (os.getenv("META_BASE_URL") or META_BASE_URL).rstrip("/")
+    r = await client.post(
+        f"{base}/chat/completions",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        json={
+            "model": model,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+            "max_tokens": 6000,
+            "reasoning_effort": os.getenv("META_REASONING_EFFORT", "low"),
+            "response_format": {"type": "json_object"},
+        },
+    )
+    r.raise_for_status()
+    return r.json()["choices"][0]["message"]["content"]
+
+
 async def _ollama(client: httpx.AsyncClient, system: str, user: str, model: str, temperature: float) -> str:
     base = (os.getenv("OLLAMA_URL") or "http://localhost:11434").rstrip("/")
     r = await client.post(
@@ -163,12 +194,23 @@ async def _anthropic(client: httpx.AsyncClient, system: str, user: str, model: s
     return "".join(texts)
 
 
-_CALLS = {"groq": _groq, "anthropic": _anthropic, "ollama": _ollama}
+_CALLS = {"meta": _meta, "groq": _groq, "anthropic": _anthropic, "ollama": _ollama}
 
 
 async def chat_json(system: str, user: str, *, temperature: float = 0.8, provider: str | None = None) -> Any:
-    """Appelle le LLM configuré et renvoie le JSON parsé (1 retry en cas d'échec)."""
+    """Appelle le LLM configuré ; si Meta échoue (crédits, réseau) et qu'une clé Groq existe, Groq prend le relais."""
     p = provider or resolve_provider()
+    if p == "meta" and provider is None and os.getenv("GROQ_API_KEY"):
+        try:
+            return await _chat_json_one(system, user, temperature=temperature, p="meta")
+        except LLMError as e:
+            log.warning("Meta indisponible (%s), relais Groq", str(e)[:200])
+            return await _chat_json_one(system, user, temperature=temperature, p="groq")
+    return await _chat_json_one(system, user, temperature=temperature, p=p)
+
+
+async def _chat_json_one(system: str, user: str, *, temperature: float, p: str) -> Any:
+    """Appelle un fournisseur donné et renvoie le JSON parsé (nouvel essai en cas d'échec)."""
     if p not in _CALLS:
         raise LLMError(f"pas de LLM pour le fournisseur '{p}'")
     models = [_model_for(p)]
