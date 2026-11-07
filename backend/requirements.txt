@@ -6,3 +6,4 @@ pydantic>=2.7
 numpy>=1.26
 pyphen>=0.15
 cmudict>=1.0
+truststore>=0.9

@@ -18,6 +18,11 @@ log = logging.getLogger("polyglotsound.groq_fallback")
 
 ASR_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
 WHISPER_LANG = {"yor": "yo", "swh": "sw", "fra": "fr", "eng": "en"}
+# Amorce générique (pas les paroles d'une chanson) : oriente Whisper vers l'orthographe de la langue
+WHISPER_PROMPT = {
+    "yor": "Orin Yorùbá. Ẹ kú àárọ̀, ọmọ mi. Ìfẹ́ ni mo ní sí ọ. Ọlọ́run á ṣe é.",
+    "swh": "Wimbo wa Kiswahili. Nakupenda sana, mpenzi wangu.",
+}
 LANG_NAMES = {"yor": "Yoruba", "swh": "Swahili", "fon": "Fon", "eng": "English", "fra": "French"}
 
 
@@ -36,6 +41,8 @@ async def transcribe(path: Path, lang: str) -> list[dict[str, Any]]:
     model = os.getenv("GROQ_ASR_MODEL", "whisper-large-v3")
     headers = {"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"}
     data = {"model": model, "language": WHISPER_LANG[lang], "response_format": "verbose_json", "temperature": "0"}
+    if lang in WHISPER_PROMPT:
+        data["prompt"] = WHISPER_PROMPT[lang]
     try:
         async with httpx.AsyncClient(timeout=120.0) as c:
             with open(path, "rb") as fh:

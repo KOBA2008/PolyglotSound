@@ -1,6 +1,12 @@
 """Application FastAPI PolyglotSound."""
 from __future__ import annotations
 
+try:  # certificats du système (Windows, antivirus, proxy d'entreprise) pour les appels HTTPS (Groq)
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
