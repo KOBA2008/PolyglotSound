@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: polyglotsound
+    runtime: docker
+    plan: free
+    branch: dev
+    healthCheckPath: /api/health
+    envVars:
+      - key: SITE_PASSWORD
+        sync: false
+      - key: LLM_PROVIDER
+        value: anthropic
+      - key: ANTHROPIC_MODEL
+        value: claude-opus-5-5
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: WORKER_URL
+        sync: false
+      - key: WORKER_TOKEN
+        sync: false
