@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, errMsg } from "../api";
+import { api, errMsg, isOffline } from "../api";
+import { useOffline } from "../health";
 import type { Project } from "../types";
 import { STEP_ORDER, langLabel } from "../types";
 import Wave from "../components/Wave";
@@ -26,11 +27,13 @@ function progressOf(p: Project) {
 export default function Home() {
   const [projects, setProjects] = useState<Project[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const offline = useOffline();
 
   const load = async () => {
     try {
       const list = await api.listProjects();
-      setProjects([...list].sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? "")));
+      // Hors ligne : ordre choisi à l'export (projet phare en premier)
+      setProjects(isOffline() ? list : [...list].sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? "")));
       setError(null);
     } catch (e) {
       setError(errMsg(e));
@@ -218,9 +221,9 @@ export default function Home() {
                         <IconPlay size={12} /> Écouter
                       </Link>
                     )}
-                    <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted transition hover:bg-flame/10 hover:text-flame-soft" aria-label={`Supprimer ${p.title}`}>
+                    {!offline && <button type="button" onClick={() => void remove(p)} className="relative z-10 rounded-full p-1.5 text-muted transition hover:bg-flame/10 hover:text-flame-soft" aria-label={`Supprimer ${p.title}`}>
                       <IconTrash size={15} />
-                    </button>
+                    </button>}
                   </div>
                 </div>
               </li>

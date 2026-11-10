@@ -23,3 +23,4 @@ export const IconAlert = ({ size, ...p }: P) => (<svg {...base(size)} {...p}><pa
 export const IconLoader = ({ size, className, ...p }: P) => (<svg {...base(size)} className={`spin ${className ?? ""}`} {...p}><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>);
 export const IconMusic = ({ size, ...p }: P) => (<svg {...base(size)} {...p}><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>);
 export const IconSave = ({ size, ...p }: P) => (<svg {...base(size)} {...p}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>);
+export const IconLogout = ({ size, ...p }: P) => (<svg {...base(size)} {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>);

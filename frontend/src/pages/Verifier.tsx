@@ -3,8 +3,11 @@ import { api, errMsg } from "../api";
 import type { WatermarkResult } from "../types";
 import DropZone from "../components/DropZone";
 import { IconAlert, IconLoader, IconShield, IconX } from "../components/icons";
+import OfflineNote from "../components/OfflineNote";
+import { useOffline } from "../health";
 
 export default function Verifier() {
+  const offline = useOffline();
   const [file, setFile] = useState<File | null>(null);
   const [res, setRes] = useState<WatermarkResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,9 +51,10 @@ export default function Verifier() {
       </header>
       <div className="glass space-y-4 p-5 md:p-7">
         <DropZone file={file} onFile={(f) => { setFile(f); setRes(null); }} label="Glissez le fichier à vérifier" />
-        <button type="button" className="btn btn-primary w-full py-3" disabled={!file || loading} onClick={() => void check()}>
+        <button type="button" className="btn btn-primary w-full py-3" disabled={offline || !file || loading} onClick={() => void check()}>
           {loading ? <IconLoader size={18} /> : <IconShield size={18} />} {loading ? "Analyse..." : "Vérifier"}
         </button>
+        <OfflineNote what="La vérification du filigrane" />
         {error && <p role="alert" className="rounded-xl border border-flame/30 bg-flame/8 p-3 text-sm text-flame-soft">{error}</p>}
       </div>
       {verdict && res && (

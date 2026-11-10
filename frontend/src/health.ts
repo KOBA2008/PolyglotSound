@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "./api";
+import { api, isOffline, onOfflineMode } from "./api";
 import type { Health } from "./types";
 
 /** Interroge /api/health régulièrement (sert aussi à détecter le retour du backend). */
@@ -21,4 +21,11 @@ export function useHealth(intervalMs = 10000) {
     return () => { alive = false; clearTimeout(timer); };
   }, [intervalMs]);
   return health;
+}
+
+/** true quand l'appli tourne en mode démo hors ligne (projets figés, lecture seule). */
+export function useOffline() {
+  const [off, setOff] = useState(isOffline());
+  useEffect(() => onOfflineMode(setOff), []);
+  return off;
 }

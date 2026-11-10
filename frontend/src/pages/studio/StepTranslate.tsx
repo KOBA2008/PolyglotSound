@@ -8,9 +8,11 @@ import SyllableGrid, { cellsFromLine, type Cell } from "../../components/Syllabl
 import VariantCard from "../../components/VariantCard";
 import { useSyllables } from "../../components/useSyllables";
 import { IconCheck, IconLoader, IconSave, IconArrowRight } from "../../components/icons";
+import { useOffline } from "../../health";
 
 export default function StepTranslate({ project, setProject, run, busy, errors, setError, goTo }: StepProps) {
   const st = project.steps.translate;
+  const offline = useOffline();
   const lines = project.lines;
   const sig = useMemo(() => lines.map((l) => `${l.index}|${l.chosen}|${l.variants?.map((v) => v.text).join("/")}`).join("\n"), [lines]);
   const [choices, setChoices] = useState<Record<number, string>>({});
@@ -82,7 +84,8 @@ export default function StepTranslate({ project, setProject, run, busy, errors, 
             ))}
           </ol>
           <div className="sticky bottom-3 z-10 mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
-            <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || (!dirty && saved)}>
+            <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={offline || saving || (!dirty && saved)}
+              title={offline ? "Indisponible en mode démo hors ligne" : undefined}>
               {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer
             </button>
             {dirty && <span className="text-sm text-gold-soft">Non enregistré</span>}

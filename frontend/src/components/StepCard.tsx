@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { StepState } from "../types";
 import StatusBadge from "./StatusBadge";
+import { useOffline } from "../health";
 import { IconAlert, IconPlay, IconRefresh } from "./icons";
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
 
 /** Cadre commun d'une étape du studio : titre, état, progression, lancement et relance. */
 export default function StepCard({ number, title, subtitle, state, onRun, runLabel = "Lancer", runDisabled, busy, error, extraActions, children }: Props) {
+  const offline = useOffline();
   const running = state?.status === "running";
   const done = state?.status === "done";
   const failed = state?.status === "error";
@@ -36,7 +38,8 @@ export default function StepCard({ number, title, subtitle, state, onRun, runLab
           {state && <StatusBadge status={state.status} />}
           {extraActions}
           {onRun && (
-            <button type="button" className={done || failed ? "btn btn-ghost" : "btn btn-primary"} onClick={onRun} disabled={runDisabled || running || busy}>
+            <button type="button" className={done || failed ? "btn btn-ghost" : "btn btn-primary"} onClick={onRun} disabled={offline || runDisabled || running || busy}
+              title={offline ? "Indisponible en mode démo hors ligne" : undefined}>
               {done || failed ? <IconRefresh size={16} /> : <IconPlay size={16} />}
               {running ? "En cours..." : done || failed ? "Relancer" : runLabel}
             </button>

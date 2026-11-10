@@ -6,6 +6,8 @@ import StepCard from "../../components/StepCard";
 import DropZone from "../../components/DropZone";
 import AudioPlayer from "../../components/AudioPlayer";
 import { IconCheck, IconLoader, IconShield, IconArrowRight } from "../../components/icons";
+import OfflineNote from "../../components/OfflineNote";
+import { useOffline } from "../../health";
 
 interface Props {
   project: Project | null;
@@ -49,6 +51,7 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const offline = useOffline();
 
   const missing: string[] = [];
   if (!title.trim()) missing.push("un titre");
@@ -121,12 +124,13 @@ function DepositForm({ onCreated }: { onCreated: (p: Project) => void }) {
           </label>
         </div>
         <div className="flex flex-wrap items-center gap-3 lg:col-span-2">
-          <button type="submit" className="btn btn-primary px-6 py-3" disabled={!!missing.length || sending}>
+          <button type="submit" className="btn btn-primary px-6 py-3" disabled={offline || !!missing.length || sending}>
             {sending ? <IconLoader size={16} /> : <IconCheck size={16} />}
             {sending ? "Envoi en cours..." : "Créer le projet"}
             {!sending && <IconArrowRight size={16} />}
           </button>
           {missing.length > 0 && <span className="text-sm text-muted">Il manque : {missing.join(", ")}.</span>}
+          <OfflineNote what="La création d'un projet" />
         </div>
       </form>
     </StepCard>

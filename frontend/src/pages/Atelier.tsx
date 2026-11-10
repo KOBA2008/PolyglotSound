@@ -8,8 +8,11 @@ import YorubaKeyboard from "../components/YorubaKeyboard";
 import { insertAtCursor } from "../components/insertAtCursor";
 import { useSyllables } from "../components/useSyllables";
 import { IconArrowRight, IconLoader } from "../components/icons";
+import OfflineNote from "../components/OfflineNote";
+import { useOffline } from "../health";
 
 export default function Atelier() {
+  const offline = useOffline();
   const [meaning, setMeaning] = useState("");
   const [text, setText] = useState("");
   const [lang, setLang] = useState<TargetLang>("eng");
@@ -117,9 +120,10 @@ export default function Atelier() {
             <SyllableGrid cells={ref} t0={0} t1={n} height={52} onToggle={toggle} label="Motif d'accents" />
             <p className="mt-2 text-xs text-muted">{stress.length} temps fort{stress.length > 1 ? "s" : ""} · cliquez les cases</p>
           </div>
-          <button type="submit" className="btn btn-primary w-full py-3 text-base" disabled={loading || !meaning.trim()}>
+          <button type="submit" className="btn btn-primary w-full py-3 text-base" disabled={offline || loading || !meaning.trim()}>
             {loading ? <IconLoader size={18} /> : <IconArrowRight size={18} />} {loading ? "Écriture des variantes..." : "Adapter la phrase"}
           </button>
+          <OfflineNote what="L'adaptation" />
         </div>
       </form>
 

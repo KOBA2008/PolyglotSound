@@ -9,6 +9,7 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
   const st = project.steps.finalize;
   const final = project.files.final;
   const mp3 = project.files["final_mp3"] ?? (final ? final.replace(/\.wav$/i, ".mp3") : null);
+  const finalIsWav = !!final && /\.wav(\?|$)/i.test(final);
   const wm = project.watermark ?? { applied: false, message: null };
   const done = st.status === "done" && !!final;
   const slug = (project.title || "polyglotsound").replace(/[^\p{L}\p{N}]+/gu, "_");
@@ -48,8 +49,8 @@ export default function StepFinalize({ project, run, busy, errors, fileUrl }: St
             </span>
           )}
           <div className="ml-auto flex flex-wrap gap-2">
-            <a className="btn btn-primary" href={final!} download={`${slug}_polyglotsound.wav`}><IconDownload size={16} /> WAV</a>
-            {mp3 && <a className="btn btn-ghost" href={mp3} download={`${slug}_polyglotsound.mp3`}><IconDownload size={16} /> MP3</a>}
+            {finalIsWav && <a className="btn btn-primary" href={final!} download={`${slug}_polyglotsound.wav`}><IconDownload size={16} /> WAV</a>}
+            {mp3 && <a className={finalIsWav ? "btn btn-ghost" : "btn btn-primary"} href={mp3} download={`${slug}_polyglotsound.mp3`}><IconDownload size={16} /> MP3</a>}
           </div>
         </div>
       )}

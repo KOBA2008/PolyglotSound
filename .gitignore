@@ -7,3 +7,6 @@ backend/data/
 .env
 worker/watermark_messages.json
 .logs/
+
+# Mode démo hors ligne : chansons protégées et voix clonées, NE JAMAIS COMMITER
+frontend/public/offline/

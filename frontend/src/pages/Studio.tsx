@@ -4,6 +4,7 @@ import { api, errMsg } from "../api";
 import type { Project, StepName, StepStatus } from "../types";
 import { STEP_ORDER, langLabel } from "../types";
 import { ModeBadge } from "../components/StatusBadge";
+import { useOffline } from "../health";
 
 const StudioWave3D = lazy(() => import("../components/StudioWave3D"));
 import { IconArrowLeft, IconArrowRight, IconCheck, IconLoader, IconAlert } from "../components/icons";
@@ -38,6 +39,7 @@ export default function Studio() {
   const [busy, setBusy] = useState<StepName | null>(null);
   const [errors, setErrors] = useState<StepProps["errors"]>({});
   const pollTimer = useRef<number | undefined>(undefined);
+  const offline = useOffline();
 
   const statusOf = (i: number): StepStatus => {
     if (i === 0) return project ? "done" : "pending";
@@ -74,10 +76,12 @@ export default function Studio() {
   // Étape active : ?etape=N sinon la première non terminée
   const firstTodo = useMemo(() => {
     if (!project) return 0;
+    // Démo hors ligne : on ouvre directement sur l'écoute du résultat
+    if (offline && project.files?.final) return WIZARD.length - 1;
     const i = WIZARD.findIndex((_, k) => k > 0 && project.steps?.[WIZARD[k].key as StepName]?.status !== "done");
     return i === -1 ? WIZARD.length - 1 : i;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id]);
+  }, [project?.id, offline]);
   const param = search.get("etape");
   const active = isNew ? 0 : Math.min(Math.max(param !== null ? Number(param) || 0 : firstTodo, 0), WIZARD.length - 1);
   const goTo = useCallback((i: number) => {
@@ -145,6 +149,7 @@ export default function Studio() {
                 <span className="rounded-[9px] px-2 py-1 shadow-[var(--inset-sm)]">{langLabel(project.source_lang)} → {langLabel(project.target_lang)}</span>
                 <ModeBadge mode={project.mode} compact />
               </div>
+              {offline && <p className="mt-2 text-xs font-semibold text-gold-soft">Démo hors ligne · lecture seule</p>}
             </div>
           ) : (
             <div className="mb-4 border-b border-ink/10 pb-4">

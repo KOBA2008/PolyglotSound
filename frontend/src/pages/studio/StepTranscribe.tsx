@@ -8,11 +8,13 @@ import { useSyllables } from "../../components/useSyllables";
 import YorubaKeyboard from "../../components/YorubaKeyboard";
 import { insertAtCursor } from "../../components/insertAtCursor";
 import { IconLoader, IconPause, IconPlay, IconSave, IconArrowRight, IconCheck } from "../../components/icons";
+import { useOffline } from "../../health";
 
 interface Draft { index: number; text: string; meaning: string }
 
 export default function StepTranscribe({ project, setProject, run, busy, errors, setError, fileUrl, goTo }: StepProps) {
   const st = project.steps.transcribe;
+  const offline = useOffline();
   const sig = useMemo(() => project.lines.map((l) => `${l.index}|${l.text}|${l.meaning}`).join("\n"), [project.lines]);
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [dirty, setDirty] = useState(false);
@@ -114,7 +116,8 @@ export default function StepTranscribe({ project, setProject, run, busy, errors,
       </ol>
       {drafts.length > 0 && (
         <div className="sticky bottom-3 z-10 mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/70 bg-surface/95 p-3 shadow-[0_-10px_30px_-14px_rgba(38,48,62,.25)] backdrop-blur">
-          <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={saving || !dirty}>
+          <button type="button" className="btn btn-primary" onClick={() => void save()} disabled={offline || saving || !dirty}
+            title={offline ? "Indisponible en mode démo hors ligne" : undefined}>
             {saving ? <IconLoader size={16} /> : <IconSave size={16} />} Enregistrer
           </button>
           {dirty && <span className="text-sm text-gold-soft">Non enregistré</span>}

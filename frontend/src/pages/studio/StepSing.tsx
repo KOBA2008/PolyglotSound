@@ -6,6 +6,8 @@ import AudioPlayer from "../../components/AudioPlayer";
 import DropZone from "../../components/DropZone";
 import Recorder from "../../components/Recorder";
 import { IconLoader, IconMic, IconMusic, IconUpload, IconAlert } from "../../components/icons";
+import OfflineNote from "../../components/OfflineNote";
+import { useOffline } from "../../health";
 
 type SingMode = "studio" | "auto";
 
@@ -16,6 +18,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
   const [recorded, setRecorded] = useState<{ blob: Blob; ext: string; url: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const [upErr, setUpErr] = useState<string | null>(null);
+  const offline = useOffline();
   const hasGuide = !!project.files.guide;
   const chosen = project.lines.filter((l) => l.chosen).length;
 
@@ -83,9 +86,10 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
           <div className="space-y-3">
             <h3 className="font-display font-extrabold">Voix guide</h3>
             <DropZone file={file} onFile={setFile} label="Glissez la voix guide chantée" />
-            <button type="button" className="btn btn-primary" disabled={!file || uploading} onClick={() => file && void upload(file, file.name)}>
+            <button type="button" className="btn btn-primary" disabled={offline || !file || uploading} onClick={() => file && void upload(file, file.name)}>
               {uploading ? <IconLoader size={16} /> : <IconUpload size={16} />} Envoyer la voix guide
             </button>
+            <OfflineNote what="L'envoi d'une voix guide" />
           </div>
           <div className="space-y-3">
             <h3 className="font-display font-extrabold">Ou enregistrez ici</h3>
@@ -99,7 +103,7 @@ export default function StepSing({ project, setProject, run, busy, errors, fileU
             {recorded && (
               <div className="space-y-2">
                 <AudioPlayer src={recorded.url} label="Prise micro" accent="flame" />
-                <button type="button" className="btn btn-primary btn-sm" disabled={uploading} onClick={() => void upload(recorded.blob, `guide.${recorded.ext}`)}>
+                <button type="button" className="btn btn-primary btn-sm" disabled={offline || uploading} onClick={() => void upload(recorded.blob, `guide.${recorded.ext}`)}>
                   {uploading ? <IconLoader size={14} /> : <IconUpload size={14} />} Utiliser cette prise
                 </button>
               </div>
